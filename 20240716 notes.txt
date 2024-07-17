@@ -1,3 +1,42 @@
+analyses to do
+Fig 1
+-basic breakdown of 1K vs all simulated for ASA and neighbors
+	-distributions and summary stats
+	-split Ts/Tv
+-compare to syn for supp?
+-neighbors as function of ASA or vice versa
+-by gene
+	-what characteristics to split by? molecular function? essentiality? haploinsufficient? gene age? complex member?
+-by amino acid -- which are most constrained?
+
+Fig 2
+-break down by secondary structure
+	-split by Ts/Tv again to control for aa composition
+-neighbors as function of ASA or vice versa for each secondary structure type
+-by amino acid again?
+
+Fig 3
+-AF histogram for 1K
+-slide AF threshold and plot effect size/p-val
+-breakdown by secondary structure
+-by gene?
+
+Fig 4
+-essentially as in Fig 3 but for At and Hs
+
+Fig 5
+-example curves over time for nonadapted/adapted
+-population growth rates over time
+-comapare to mutator => mutation-limited
+-validation of growth rate in post-hoc measurements
+
+Fig 6
+-WGS summary and breakdown of hits
+-pooling and sequencing schematic
+-deep dive on Primordium pool hits/frequencies+overlay on structure
+
+
+
 data prep
 X-alphafold structure PDBs
 	-download from AF website
@@ -9,6 +48,7 @@ X-check for presence of all 3 files for each systematic name; output gene list t
 	-check_files_systematic.m
 -convert DSSP and neighbors to .mat
 	-
+
 
 
 existing workflow
@@ -36,6 +76,7 @@ existing workflow
 	-prior output files are on backup HDD
 	-just storing protein data (not genotype data) in dependencies might be ok
 	-scrapes of Gnomad and 1001 also look good already
+
 
 
 other directories
