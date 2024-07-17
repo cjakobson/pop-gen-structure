@@ -1,0 +1,41 @@
+data prep
+X-alphafold structure PDBs
+	-download from AF website
+X-dssp .txt files
+	-loop_dssp.sh
+X-neighbor output .txt files
+	-nearby_residues.m
+X-check for presence of all 3 files for each systematic name; output gene list to use as background set; output missing structure gene list
+	-check_files_systematic.m
+-convert DSSP and neighbors to .mat
+	-
+
+
+existing workflow
+-mutation simulations based on S288C
+	-generate DSSP .txt files
+		-loopDssp.sh
+	-generate neighbors .txt files
+		-nearbyResidues.m
+	-convert DSSP and neighbors to .mat
+		-getDssp.m		-getNeighbors.m
+	[-skip p-site for this analysis]
+	-generate mutation tables
+		-simulateSnps.m
+	-merge and save output [currently this script calls the getX.m functions above]
+		-simulateAllSnps.m
+-annotate 1K variants
+	-annotate VCF with SnpEff
+	-import annotated VCF
+		-importGenomeDataAnnotated.m
+	-match to structure data
+		-analyze1kSecondary.m
+-compare 1K to all possible
+	-need to make new code for this
+
+
+other directories
+-UP000002311_559292_YEAST
+-mutationSimulations/mutationOutput
+-pop-gen-structure-dependencies
+
