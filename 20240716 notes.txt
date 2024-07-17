@@ -5,7 +5,7 @@ Fig 1
 	-split Ts/Tv
 -compare to syn for supp?
 -neighbors as function of ASA or vice versa
--by gene
+-by gene -- crossplot summary statistic by gene (ASA vs neighbors)
 	-what characteristics to split by? molecular function? essentiality? haploinsufficient? gene age? complex member?
 -by amino acid -- which are most constrained?
 
@@ -48,6 +48,10 @@ X-check for presence of all 3 files for each systematic name; output gene list t
 	-check_files_systematic.m
 -convert DSSP and neighbors to .mat
 	-
+-generate mutation tables
+	-
+-merge and save output -- attach gene names to both 1K and all simulated
+	-
 
 
 
@@ -83,4 +87,5 @@ other directories
 -UP000002311_559292_YEAST
 -mutationSimulations/mutationOutput
 -pop-gen-structure-dependencies
+
 
