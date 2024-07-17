@@ -32,6 +32,10 @@ existing workflow
 		-analyze1kSecondary.m
 -compare 1K to all possible
 	-need to make new code for this
+-similar approach for At and Hs
+	-prior output files are on backup HDD
+	-just storing protein data (not genotype data) in dependencies might be ok
+	-scrapes of Gnomad and 1001 also look good already
 
 
 other directories
