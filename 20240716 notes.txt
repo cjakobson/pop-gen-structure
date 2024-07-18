@@ -8,6 +8,7 @@ Fig 1
 -by gene -- crossplot summary statistic by gene (ASA vs neighbors)
 	-what characteristics to split by? molecular function? essentiality? haploinsufficient? gene age? complex member?
 -by amino acid -- which are most constrained?
+	-cross-plot summary statistic by ref/alt combos as for genes?
 
 Fig 2
 -break down by secondary structure
@@ -23,6 +24,7 @@ Fig 3
 
 Fig 4
 -essentially as in Fig 3 but for At and Hs
+	-cross-plot by genes here too?
 
 Fig 5
 -example curves over time for nonadapted/adapted
