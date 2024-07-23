@@ -48,10 +48,10 @@ X-neighbor output .txt files
 	-nearby_residues.m
 X-check for presence of all 3 files for each systematic name; output gene list to use as background set; output missing structure gene list
 	-check_files_systematic.m
--convert DSSP and neighbors to .mat
-	-
--generate mutation tables
-	-
+X-convert DSSP and neighbors to .mat
+	-generate_mat_files.m [get_dssp.m, get_neighbors.m]
+X-generate mutation tables
+	-generate_mutation_tables.m [simulate_snps.m]
 -merge and save output -- attach gene names to both 1K and all simulated
 	-
 

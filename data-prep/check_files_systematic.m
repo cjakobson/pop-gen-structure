@@ -30,10 +30,12 @@ end
 
 
 temp_list=pdb_id;
-%check for presence of DSSP and neighbor files
+%check for presence of DSSP and neighbor files, etc
 m=1;
 n=1;
 o=1;
+p=1;
+q=1;
 thresh=10;
 for i=1:length(temp_list)
     
@@ -59,14 +61,30 @@ for i=1:length(temp_list)
         o=o+1;
 
     end
+
+    if ~exist([dependency_directory 'mat-files/' systematic_name_pdb{i} '_neighbor_table.mat'])
+
+        missing_neighbors_mat{p}=systematic_name_pdb{i};
+        p=p+1;
+
+    end
+
+    if ~exist([dependency_directory 'mat-files/' systematic_name_pdb{i} '_dssp_table.mat'])
+
+        missing_dssp_mat{q}=systematic_name_pdb{i};
+        q=q+1;
+
+    end
             
 end
 
 m-1
 n-1
 o-1
+p-1
+q-1
 
-to_output=table(missing_af','VariableNames',{'ORF'});
+to_output=table(missing_dssp_mat','VariableNames',{'ORF'});
 writetable(to_output,[dependency_directory 'missing_genes.txt'])
 
 
