@@ -17,7 +17,7 @@ new_codon=initial_base;
 is_mis=zeros(3*n_bases,1);
 residue_number=is_mis;
 
-is_ss=is_mis;
+is_ts=is_mis;
 
 m=1;
 for i=1:n_bases
@@ -48,7 +48,7 @@ for i=1:n_bases
                 (strcmp(initial_base{m},'G')&&strcmp(new_base{m},'A'))||...
                 (strcmp(initial_base{m},'C')&&strcmp(new_base{m},'T'))||...
                 (strcmp(initial_base{m},'T')&&strcmp(new_base{m},'C'))
-            is_ss(m)=1;
+            is_ts(m)=1;
         end
         
         residue_number(m)=ceil(i/3);
@@ -60,7 +60,7 @@ for i=1:n_bases
 end
 
 output_table=table(residue_number,initial_base,new_base,initial_residue,new_residue,...
-    initial_codon,new_codon,is_mis,is_ss);
+    initial_codon,new_codon,is_mis,is_ts);
 
 save([dependency_directory 'mutation-tables/' systematic_name '_mutation_table.mat'],'output_table')
 

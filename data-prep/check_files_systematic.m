@@ -29,62 +29,84 @@ for i=1:length(pdb_dictionary.Entry)
 end
 
 
+tic
+
 temp_list=pdb_id;
 %check for presence of DSSP and neighbor files, etc
-m=1;
-n=1;
-o=1;
-p=1;
-q=1;
+%also check lengths of sequences
+seq_length=nan(length(temp_list),5);
 thresh=10;
 for i=1:length(temp_list)
     
     temp_pdb_id=temp_list{i};
             
-    if ~exist([dependency_directory 'neighbor-output/' temp_pdb_id '_' num2str(thresh) 'A.txt'])
-
-        missing_neighbors{m}=systematic_name_pdb{i};
-        m=m+1;
-
-    end
-
-    if ~exist([dependency_directory 'dssp-output/AF-' temp_pdb_id '-F1-model_v1.pdbdssp.txt'])
-
-        missing_dssp{n}=systematic_name_pdb{i};
-        n=n+1;
-
-    end
-
-    if ~exist([dependency_directory 'alphafold-predictions/AF-' temp_pdb_id '-F1-model_v1.pdb'])
-
-        missing_af{o}=systematic_name_pdb{i};
-        o=o+1;
+    file_to_get{1}=[dependency_directory 'neighbor-output/' temp_pdb_id '_' num2str(thresh) 'A.txt'];
+    file_to_get{2}=[dependency_directory 'dssp-output/AF-' temp_pdb_id '-F1-model_v1.pdbdssp.txt'];
+    file_to_get{3}=[dependency_directory 'mat-files/' systematic_name_pdb{i} '_neighbor_table.mat'];
+    file_to_get{4}=[dependency_directory 'mat-files/' systematic_name_pdb{i} '_dssp_table.mat'];
+    file_to_get{5}=[dependency_directory 'mutation-tables/' systematic_name_pdb{i} '_mutation_table.mat'];
+    
+    if exist(file_to_get{1})
+        
+        temp_table=readtable(file_to_get{1});
+        seq_length(i,1)=height(temp_table);
 
     end
-
-    if ~exist([dependency_directory 'mat-files/' systematic_name_pdb{i} '_neighbor_table.mat'])
-
-        missing_neighbors_mat{p}=systematic_name_pdb{i};
-        p=p+1;
-
-    end
-
-    if ~exist([dependency_directory 'mat-files/' systematic_name_pdb{i} '_dssp_table.mat'])
-
-        missing_dssp_mat{q}=systematic_name_pdb{i};
-        q=q+1;
+    
+    if exist(file_to_get{2})
+        
+        temp_table=readtable(file_to_get{2});
+        seq_length(i,2)=height(temp_table)-21;  %header is 21 lines
 
     end
+    
+    if exist(file_to_get{3})
+        
+        load(file_to_get{3})
+        seq_length(i,3)=height(output_table);
+
+    end
+    
+    if exist(file_to_get{4})
+        
+        load(file_to_get{4})
+        seq_length(i,4)=height(output_table);
+
+    end
+    
+    if exist(file_to_get{5})
+        
+        load(file_to_get{5})
+        seq_length(i,5)=height(output_table)/9; %3 nt per aa, 3 muts per nt
+
+    end
+    
             
 end
 
-m-1
-n-1
-o-1
-p-1
-q-1
+toc
 
-to_output=table(missing_dssp_mat','VariableNames',{'ORF'});
-writetable(to_output,[dependency_directory 'missing_genes.txt'])
+
+%missing data
+sum(isnan(seq_length))
+% to_output=table(missing_dssp_mat','VariableNames',{'ORF'});
+% writetable(to_output,[dependency_directory 'missing_genes.txt'])
+
+
+
+%check whether pdb and genome protein lengths, etc agree
+sum(seq_length(:,3)~=seq_length(:,4))
+sum(seq_length(:,4)~=seq_length(:,5))
+
+%check which genes have no missing data
+sum(sum(isnan(seq_length),2)==0)
+
+%check which genes have no length mismatches
+
+
+
+
+%how to format ASA and neighbor data? genes as rows and residues as
+%columns? then references this for 1K data
 
 
