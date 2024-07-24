@@ -102,11 +102,69 @@ sum(seq_length(:,4)~=seq_length(:,5))
 sum(sum(isnan(seq_length),2)==0)
 
 %check which genes have no length mismatches
+sum((seq_length(:,3)==seq_length(:,4)).*(seq_length(:,4)==seq_length(:,5)))
+
+temp_idx=~((seq_length(:,3)==seq_length(:,4)).*(seq_length(:,4)==seq_length(:,5)));
+to_output=table(systematic_name_pdb(temp_idx),'VariableNames',{'ORF'});
+writetable(to_output,[dependency_directory 'missing_genes.txt'])
 
 
+%trim matrix and build ASA and neighbor matrices
+temp_idx=logical((seq_length(:,3)==seq_length(:,4)).*(seq_length(:,4)==seq_length(:,5)));
 
+genes_to_use=systematic_name_pdb(temp_idx);
+length_matrix_to_use=seq_length(temp_idx,:);
+
+longest_seq=max(max(length_matrix_to_use));
 
 %how to format ASA and neighbor data? genes as rows and residues as
-%columns? then references this for 1K data
+%columns? then reference this for 1K data
+asa_mat=nan(length(genes_to_use),longest_seq);
+neighbor_mat=nan(length(genes_to_use),longest_seq);
+secondary_mat=cell(length(genes_to_use),longest_seq);
+residue_mat=cell(length(genes_to_use),longest_seq);
+
+
+tic
+
+clear file_to_get
+for i=1:length(genes_to_use)
+    
+    temp_systematic=genes_to_use{i};
+    file_to_get{1}=[dependency_directory 'mat-files/' temp_systematic '_neighbor_table.mat'];
+    file_to_get{2}=[dependency_directory 'mat-files/' temp_systematic '_dssp_table.mat'];
+    
+    if exist(file_to_get{1})
+        
+        load(file_to_get{1})
+        neighbor_mat(i,1:height(output_table))=output_table.neighbors;
+
+    end
+    
+    if exist(file_to_get{2})
+        
+        load(file_to_get{2})
+        asa_mat(i,1:height(output_table))=output_table.sasa;
+        
+        %also secondary structure, ref residue
+        secondary_mat(i,1:height(output_table))=output_table.secondary;
+
+        residue_mat(i,1:height(output_table))=output_table.residue;
+        
+    end
+    
+            
+end
+
+toc
+
+
+save([dependency_directory 'asa_data.mat'],'asa_mat','genes_to_use')
+save([dependency_directory 'neighbor_data.mat'],'neighbor_mat','genes_to_use')
+save([dependency_directory 'secondary_structure_data.mat'],'secondary_mat','genes_to_use')
+save([dependency_directory 'residue_data.mat'],'residue_mat','genes_to_use')
+
+
+
 
 
