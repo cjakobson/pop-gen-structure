@@ -38,6 +38,9 @@ load([dependency_directory 'simulated_mutation_positions.mat'])
 load([dependency_directory '1K_mutation_positions.mat'])
 load([dependency_directory '1K_mutation_af.mat'])
 
+%change to maf
+af_mat_1K(af_mat_1K>0.5)=1-af_mat_1K(af_mat_1K>0.5);
+
 
 structure_labels={'alphahelix','310helix','pihelix','betasheet','betaladder',...
      'bend','turn','unstr.'};
@@ -50,11 +53,13 @@ aa_labels={'A','V','I','L','M','F','Y','W','S','T','N','Q','H','R','K','D','E','
 %residues)
 figure('units','normalized','outerposition',[0 0 1 1])
 v1=reshape(asa_mat,1,[]);
+v1=v1(~isnan(v1));
 v2=reshape(neighbor_mat,1,[]);
+v2=v2(~isnan(v2));
 
 subplot(2,4,1)
 hold on
-histogram(v1,0:10:350)%,'Normalization','probability')
+histogram(v1,0:10:250)%,'Normalization','probability')
 axis square
 legend({'all residues'})
 title('ASA')
@@ -171,7 +176,7 @@ for i=1:length(structure_labels)
     ylabel('neighbors')
     title(structure_labels{i})
     ylim([0 50])
-    xlim([0 350])
+    xlim([0 250])
     
 end
 
@@ -205,7 +210,7 @@ for i=1:length(aa_labels)
     ylabel('neighbors')
     title(aa_labels{i})
     ylim([0 50])
-    xlim([0 350])
+    xlim([0 250])
     
 end
 
@@ -387,6 +392,113 @@ figure_counter=figure_counter+1;
 
 
 
+%also example 1K vs sim ASA and neighbor histograms for interesting residues/structures
+figure('units','normalized','outerposition',[0 0 1 1])
+m=1;
+
+%alphahelix vs betaladder vs unstr
+structure_to_plot=[1 5 8];
+
+for i=1:length(structure_to_plot)
+    
+    v1=gene_structure_asa_mat_1K(:,structure_to_plot(i));
+    v1=v1(~isnan(v1));
+    v2=gene_structure_asa_mat_sim(:,structure_to_plot(i));
+    v2=v2(~isnan(v2));
+    
+    subplot(2,6,m)
+    hold on
+    histogram(v1,0:10:250,'Normalization','probability')
+    histogram(v2,0:10:250,'Normalization','probability')
+    axis square
+    legend({'1K','sim'})
+    title(structure_labels{structure_to_plot(i)})
+    ylabel('relative frequency')
+    xlabel('ASA')
+    m=m+1;
+
+    
+    v1=gene_structure_neighbor_mat_1K(:,structure_to_plot(i));
+    v1=v1(~isnan(v1));
+    v2=gene_structure_neighbor_mat_sim(:,structure_to_plot(i));
+    v2=v2(~isnan(v2));
+    
+    subplot(2,6,m)
+    hold on
+    histogram(v1,0:2:50,'Normalization','probability')
+    histogram(v2,0:2:50,'Normalization','probability')
+    axis square
+    legend({'1K','sim'})
+    title(structure_labels{structure_to_plot(i)})
+    ylabel('relative frequency')
+    xlabel('neighbors')
+    m=m+1;
+    
+end
+
+
+
+
+
+m=7;
+aa_to_plot={'A','C','K'};
+
+for i=1:length(aa_to_plot)
+    
+    aa_idx=find(ismember(aa_labels,aa_to_plot{i}));
+    
+    v1=gene_residue_asa_mat_1K(:,aa_idx);
+    v1=v1(~isnan(v1));
+    v2=gene_residue_asa_mat_sim(:,aa_idx);
+    v2=v2(~isnan(v2));
+    
+    subplot(2,6,m)
+    hold on
+    histogram(v1,0:10:250,'Normalization','probability')
+    histogram(v2,0:10:250,'Normalization','probability')
+    axis square
+    legend({'1K','sim'})
+    title(aa_to_plot{i})
+    ylabel('relative frequency')
+    xlabel('ASA')
+    m=m+1;
+
+    
+    
+    v1=gene_residue_neighbor_mat_1K(:,aa_idx);
+    v1=v1(~isnan(v1));
+    v2=gene_residue_neighbor_mat_sim(:,aa_idx);
+    v2=v2(~isnan(v2));
+    
+    subplot(2,6,m)
+    hold on
+    histogram(v1,0:2:50,'Normalization','probability')
+    histogram(v2,0:2:50,'Normalization','probability')
+    axis square
+    legend({'1K','sim'})
+    title(aa_to_plot{i})
+    ylabel('relative frequency')
+    xlabel('neighbors')
+    m=m+1;
+    
+end
+
+
+
+
+
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+figure_counter=figure_counter+1;
+
+
+
+
+
+
+
+
 
 
 asa_mat_1K=nan(size(af_mat_1K));
@@ -440,8 +552,12 @@ end
 figure('units','normalized','outerposition',[0 0 1 1])
 subplot(2,4,1)
 hold on
-histogram(asa_1K)%,'Normalization','probability')
-histogram(asa_sim)%,'Normalization','probability')
+v1=asa_1K;
+v1=v1(~isnan(v1));
+v2=asa_sim;
+v2=v2(~isnan(v2));
+histogram(v1,0:10:250)%,'Normalization','probability')
+histogram(v2,0:10:250)%,'Normalization','probability')
 axis square
 legend({'1K','sim'})
 title('ASA')
@@ -451,8 +567,12 @@ ylabel('number of genes')
 
 subplot(2,4,2)
 hold on
-histogram(neighbor_1K)%,'Normalization','probability')
-histogram(neighbor_sim)%,'Normalization','probability')
+v1=neighbor_1K;
+v1=v1(~isnan(v1));
+v2=neighbor_sim;
+v2=v2(~isnan(v2));
+histogram(v1,0:2:50)%,'Normalization','probability')
+histogram(v2,0:2:50)%,'Normalization','probability')
 axis square
 legend({'1K','sim'})
 title('neighbors')
@@ -461,8 +581,12 @@ ylabel('number of genes')
 
 subplot(2,4,3)
 hold on
-histogram(mutations_1K)%,'Normalization','probability')
-histogram(mutations_sim)%,'Normalization','probability')
+v1=mutations_1K;
+v1=v1(~isnan(v1));
+v2=mutations_sim;
+v2=v2(~isnan(v2));
+histogram(v1)%,'Normalization','probability')
+histogram(v2)%,'Normalization','probability')
 axis square
 legend({'1K','sim'})
 title('mutations/residue')
@@ -550,14 +674,16 @@ to_output=table(genes_to_use(sort_idx(1:n_to_output)));
 writetable(to_output,[output_directory 'most_constrained_genes_neighbor.txt'])
 
 
-close all
+%close all
 
 
 
 %start AF analysis
 figure('units','normalized','outerposition',[0 0 1 1])
 subplot(2,4,1)
-histogram(af_mat_1K)
+v1=af_mat_1K;
+v1=v1(~isnan(v1));
+histogram(v1)
 %set(gca,'XScale','log')
 set(gca,'YScale','log')
 axis square
@@ -586,8 +712,9 @@ for i=1:(length(af_bins)-1)
     n_variants(i)=sum(sum(temp_idx));
     
     to_plot{i}=asa_mat_1K(temp_idx);
+    to_plot{i}=to_plot{i}(~isnan(to_plot{i}));
     
-    histogram(to_plot{i},0:10:300,'Normalization','probability')
+    histogram(to_plot{i},0:10:250,'Normalization','probability')
     
 end
 %set(gca,'YScale','log')
@@ -609,8 +736,9 @@ for i=1:(length(af_bins)-1)
     n_variants(i)=sum(sum(temp_idx));
     
     to_plot{i}=neighbor_mat_1K(temp_idx);
+    to_plot{i}=to_plot{i}(~isnan(to_plot{i}));
     
-    histogram(to_plot{i},0:1:50,'Normalization','probability')
+    histogram(to_plot{i},0:2:50,'Normalization','probability')
     
 end
 %set(gca,'YScale','log')
@@ -806,7 +934,7 @@ print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
 
 
-close all
+%close all
 
 
 
