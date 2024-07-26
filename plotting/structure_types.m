@@ -1,32 +1,33 @@
-%function that returns variant type distribution
-function [distOut,arrayOut]=structureTypes(inputArray)
+%function that returns structure type distribution
+function [dist_out,array_out]=structure_types(inputArray)
 
 %helices
-variantArray{1}={'H'};
-variantArray{2}={'G'};
-variantArray{3}={'I'};
+variant_array{1}={'H'};
+variant_array{2}={'G'};
+variant_array{3}={'I'};
 %sheets
-variantArray{4}={'B'};
-variantArray{5}={'E'};
+variant_array{4}={'B'};
+variant_array{5}={'E'};
 %turns
-variantArray{6}={'S'};
-variantArray{7}={'T'};
+variant_array{6}={'S'};
+variant_array{7}={'T'};
 %none
-variantArray{8}={'U'};
+variant_array{8}={'U'};
 
-arrayOut=zeros(1,length(inputArray));
+%allow 2D input
+array_out=zeros(size(inputArray));
 
-for i=1:length(variantArray)
+for i=1:length(variant_array)
 
-    arrayOut(ismember(inputArray,variantArray{i}))=i;
+    array_out(ismember(inputArray,variant_array{i}))=i;
 
 end
 
-for i=1:length(variantArray)
+for i=1:length(variant_array)
      
-    distOut(i)=sum(arrayOut==i);
+    dist_out(i)=sum(sum(array_out==i));
     
 end
 
-distOut=distOut./sum(distOut);
+dist_out=dist_out./sum(dist_out);
 

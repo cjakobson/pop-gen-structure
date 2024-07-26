@@ -1,3 +1,8 @@
+general code things
+-function for 2D heatmaps [ASA vs neighbors, etc]
+
+
+
 analyses to do
 Fig 1
 -basic breakdown of 1K vs all simulated for ASA and neighbors
@@ -9,6 +14,7 @@ Fig 1
 	-what characteristics to split by? molecular function? essentiality? haploinsufficient? gene age? complex member?
 -by amino acid -- which are most constrained?
 	-cross-plot summary statistic by ref/alt combos as for genes?
+-baseline ASA and neighbor stats by structure+residue
 
 XXor make Fig 1 about structure and residues and Fig 2 about genesXX
 XXcould work either way -- could do intro/genes/summary stats first then molecular detailsXX
@@ -18,6 +24,7 @@ Fig 2
 	-split by Ts/Tv again to control for aa composition
 -neighbors as function of ASA or vice versa for each secondary structure type
 -by amino acid again?
+[-domain boundaries/architectures?]
 
 Fig 3
 -AF histogram for 1K
