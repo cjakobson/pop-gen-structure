@@ -79,10 +79,15 @@ set(gca,'YScale','log')
 
 
 subplot(2,4,3)
-scatter(v1,v2,10,'k','filled')
+%scatter(v1,v2,10,'k','filled')
+histogram2(v1,v2,0:5:250,0:1:50,'DisplayStyle','tile','ShowEmptyBins','on')
+colormap(flipud(bone))
 axis square
 xlabel('ASA')
 ylabel('neighbors')
+
+
+
 
 
 set(gcf,'PaperPositionMode','auto')
@@ -167,10 +172,14 @@ for i=1:length(structure_labels)
     temp_idx=all_residue_type==i;
     
     v1=reshape(asa_mat(temp_idx),1,[]);
+    v1=v1(~isnan(v1));
     v2=reshape(neighbor_mat(temp_idx),1,[]);
+    v2=v2(~isnan(v2));
     
     subplot(2,4,i)
-    scatter(v1,v2,10,'k','filled')
+    %scatter(v1,v2,10,'k','filled')
+    histogram2(v1,v2,0:5:250,0:1:50,'DisplayStyle','tile','ShowEmptyBins','on')
+    colormap(flipud(bone))
     axis square
     xlabel('ASA')
     ylabel('neighbors')
@@ -190,6 +199,7 @@ figure_counter=figure_counter+1;
 
 
 
+
 %also by residue
 
 
@@ -201,10 +211,14 @@ for i=1:length(aa_labels)
     temp_idx=ismember(residue_mat,aa_labels{i});
     
     v1=reshape(asa_mat(temp_idx),1,[]);
+    v1=v1(~isnan(v1));
     v2=reshape(neighbor_mat(temp_idx),1,[]);
+    v2=v2(~isnan(v2));
     
     subplot(3,7,i)
-    scatter(v1,v2,10,'k','filled')
+    %scatter(v1,v2,10,'k','filled')
+    histogram2(v1,v2,0:5:250,0:1:50,'DisplayStyle','tile','ShowEmptyBins','on')
+    colormap(flipud(bone))
     axis square
     xlabel('ASA')
     ylabel('neighbors')
@@ -598,7 +612,11 @@ ylabel('number of genes')
 
 subplot(2,4,5)
 hold on
-scatter(rel_asa,rel_neighbor,10,'k','filled')
+%scatter(rel_asa,rel_neighbor,10,'k','filled')
+histogram2(rel_asa,rel_neighbor,0.5:0.02:2,0.5:0.02:1.5,'DisplayStyle','tile','ShowEmptyBins','on')
+colormap(flipud(bone))
+xlim([0.5 2])
+ylim([0.5 1.5])
 axis square
 xlabel('relative ASA 1K/sim')
 ylabel('relative neighbors 1K/sim')
@@ -606,7 +624,11 @@ ylabel('relative neighbors 1K/sim')
 
 subplot(2,4,6)
 hold on
-scatter(rel_mutations,rel_asa,10,'k','filled')
+%scatter(rel_mutations,rel_asa,10,'k','filled')
+histogram2(rel_mutations,rel_asa,0:0.002:0.1,0.5:0.02:2,'DisplayStyle','tile','ShowEmptyBins','on')
+colormap(flipud(bone))
+ylim([0.5 2])
+xlim([0 0.1])
 axis square
 xlabel('relative # mutations 1K/sim')
 ylabel('relative ASA 1K/sim')
@@ -614,10 +636,15 @@ ylabel('relative ASA 1K/sim')
 
 subplot(2,4,7)
 hold on
-scatter(rel_mutations,rel_neighbor,10,'k','filled')
+%scatter(rel_mutations,rel_neighbor,10,'k','filled')
+histogram2(rel_mutations,rel_neighbor,0:0.002:0.1,0.5:0.02:1.5,'DisplayStyle','tile','ShowEmptyBins','on')
+colormap(flipud(bone))
+ylim([0.5 1.5])
+xlim([0 0.1])
 axis square
 xlabel('relative # mutations 1K/sim')
 ylabel('relative neighbors 1K/sim')
+
 
 
 
