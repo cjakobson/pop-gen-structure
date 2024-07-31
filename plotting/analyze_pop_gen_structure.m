@@ -80,7 +80,7 @@ set(gca,'YScale','log')
 
 subplot(2,4,3)
 %scatter(v1,v2,10,'k','filled')
-histogram2(v1,v2,0:5:250,0:1:50,'DisplayStyle','tile','ShowEmptyBins','on')
+histogram2(v1,v2,0:5:250,4:1:35,'DisplayStyle','tile','ShowEmptyBins','on')
 colormap(flipud(bone))
 axis square
 xlabel('ASA')
@@ -178,13 +178,13 @@ for i=1:length(structure_labels)
     
     subplot(2,4,i)
     %scatter(v1,v2,10,'k','filled')
-    histogram2(v1,v2,0:5:250,0:1:50,'DisplayStyle','tile','ShowEmptyBins','on')
+    histogram2(v1,v2,0:5:250,4:1:35,'DisplayStyle','tile','ShowEmptyBins','on')
     colormap(flipud(bone))
     axis square
     xlabel('ASA')
     ylabel('neighbors')
     title(structure_labels{i})
-    ylim([0 50])
+    ylim([4 35])
     xlim([0 250])
     
 end
@@ -217,13 +217,13 @@ for i=1:length(aa_labels)
     
     subplot(3,7,i)
     %scatter(v1,v2,10,'k','filled')
-    histogram2(v1,v2,0:5:250,0:1:50,'DisplayStyle','tile','ShowEmptyBins','on')
+    histogram2(v1,v2,0:5:250,4:1:35,'DisplayStyle','tile','ShowEmptyBins','on')
     colormap(flipud(bone))
     axis square
     xlabel('ASA')
     ylabel('neighbors')
     title(aa_labels{i})
-    ylim([0 50])
+    ylim([4 35])
     xlim([0 250])
     
 end
@@ -369,7 +369,7 @@ end
 subplot(2,2,3)
 hold on
 bar(mean_residue_asa_relative,'BaseValue',1)
-ylim([0.6 1.4])
+ylim([0.5 1.5])
 xticks(1:length(aa_labels))
 xticklabels(aa_labels)
 ylabel('1K/sim')
@@ -439,8 +439,8 @@ for i=1:length(structure_to_plot)
     
     subplot(2,6,m)
     hold on
-    histogram(v1,0:2:50,'Normalization','probability')
-    histogram(v2,0:2:50,'Normalization','probability')
+    histogram(v1,0:2:35,'Normalization','probability')
+    histogram(v2,0:2:35,'Normalization','probability')
     axis square
     legend({'1K','sim'})
     title(structure_labels{structure_to_plot(i)})
@@ -486,8 +486,8 @@ for i=1:length(aa_to_plot)
     
     subplot(2,6,m)
     hold on
-    histogram(v1,0:2:50,'Normalization','probability')
-    histogram(v2,0:2:50,'Normalization','probability')
+    histogram(v1,0:2:35,'Normalization','probability')
+    histogram(v2,0:2:35,'Normalization','probability')
     axis square
     legend({'1K','sim'})
     title(aa_to_plot{i})
@@ -585,8 +585,8 @@ v1=neighbor_1K;
 v1=v1(~isnan(v1));
 v2=neighbor_sim;
 v2=v2(~isnan(v2));
-histogram(v1,0:2:50)%,'Normalization','probability')
-histogram(v2,0:2:50)%,'Normalization','probability')
+histogram(v1,0:2:35)%,'Normalization','probability')
+histogram(v2,0:2:35)%,'Normalization','probability')
 axis square
 legend({'1K','sim'})
 title('neighbors')
@@ -765,7 +765,7 @@ for i=1:(length(af_bins)-1)
     to_plot{i}=neighbor_mat_1K(temp_idx);
     to_plot{i}=to_plot{i}(~isnan(to_plot{i}));
     
-    histogram(to_plot{i},0:2:50,'Normalization','probability')
+    histogram(to_plot{i},0:2:35,'Normalization','probability')
     
 end
 %set(gca,'YScale','log')
@@ -950,6 +950,7 @@ for i=1:length(aa_labels)
     ylim([0 Inf])
     title(aa_labels{i})
     legend({'ASA','neighbors'})
+    axis square
     
 end
 
@@ -962,6 +963,191 @@ figure_counter=figure_counter+1;
 
 
 %close all
+
+
+at_data=readtable([dependency_directory 'arabidopsis-data/1001misAnnotated.csv']);
+
+%convert allele counts to MAF
+at_af=at_data.AC;
+at_af=at_af./max(at_af);
+at_af(at_af>0.5)=1-at_af(at_af>0.5);
+
+at_asa=at_data.sasa;
+at_neighbor=at_data.neighbors;
+
+[~,at_structure]=structure_types(at_data.secondary);
+at_residue=at_data.residue;
+
+figure('units','normalized','outerposition',[0 0 1 1])
+subplot(2,4,1)
+histogram(at_af,0:0.01:0.5)
+set(gca,'YScale','log')
+xlabel('A.t. AF')
+ylabel('frequency')
+axis square
+
+
+
+at_asa_p_val=nan(length(thresh_to_test),1);
+at_asa_effect_size=nan(length(thresh_to_test),1);
+
+at_neighbor_p_val=nan(length(thresh_to_test),1);
+at_neighbor_effect_size=nan(length(thresh_to_test),1);
+for i=1:length(thresh_to_test)
+    
+    temp_idx=at_af<=thresh_to_test(i);
+    
+    if sum(sum(temp_idx))>0
+    
+        [h p]=ttest2(at_asa(temp_idx),at_asa(~temp_idx));
+
+        at_asa_p_val(i)=p;
+        at_asa_effect_size(i)=mean(at_asa(temp_idx),'omitnan')./...
+            mean(at_asa(~temp_idx),'omitnan');
+        
+        
+    
+        [h p]=ttest2(at_neighbor(temp_idx),at_neighbor(~temp_idx));
+
+        at_neighbor_p_val(i)=p;
+        at_neighbor_effect_size(i)=mean(at_neighbor(temp_idx),'omitnan')./...
+            mean(at_neighbor(~temp_idx),'omitnan');
+        
+    end
+    
+end
+
+
+subplot(2,4,2)
+hold on
+scatter(at_asa_effect_size,-log10(at_asa_p_val),50,'.k')
+scatter(at_neighbor_effect_size,-log10(at_neighbor_p_val),25,'ok')
+xlim([0.7 1.3])
+xlabel('effect size (rare/common)')
+ylabel('-log10 p')
+ylim([0 350])
+legend({'ASA','neighbors'})
+axis square
+v1=at_asa_effect_size;
+v2=-log10(at_asa_p_val);
+for i=1:length(thresh_to_test)
+    text(v1(i),v2(i),num2str(thresh_to_test(i)))
+end
+
+
+%1% looks good
+
+at_af_thresh=0.01;
+temp_idx1=at_af<=at_af_thresh;
+
+for i=1:length(structure_labels)
+    
+    temp_idx2=at_structure==i;
+    
+    v1=at_asa(logical(temp_idx1.*temp_idx2));
+    v2=at_asa(logical(~temp_idx1.*temp_idx2));
+    
+    at_mean_structure_asa_relative(i)=mean(v1,'omitnan')/mean(v2,'omitnan');
+    
+    [h p]=ttest2(v1,v2);
+    at_p_val_structure_asa_relative(i)=p;
+    
+    
+    v1=at_neighbor(logical(temp_idx1.*temp_idx2));
+    v2=at_neighbor(logical(~temp_idx1.*temp_idx2));
+    
+    at_mean_structure_neighbor_relative(i)=mean(v1,'omitnan')/mean(v2,'omitnan');
+    
+    [h p]=ttest2(v1,v2);
+    at_p_val_structure_neighbor_relative(i)=p;
+
+end
+
+subplot(2,4,3)
+hold on
+bar(at_mean_structure_asa_relative,'BaseValue',1)
+title('ASA')
+xticks(1:length(structure_labels))
+xticklabels(structure_labels)
+ylim([0.8 1.2])
+for i=1:length(at_p_val_structure_asa_relative)
+    text(i,0.85,num2str(at_p_val_structure_asa_relative(i)))
+end
+
+
+
+subplot(2,4,4)
+hold on
+bar(at_mean_structure_neighbor_relative,'BaseValue',1)
+title('neighbors')
+xticks(1:length(structure_labels))
+xticklabels(structure_labels)
+ylim([0.9 1.1])
+for i=1:length(at_p_val_structure_neighbor_relative)
+    text(i,0.92,num2str(at_p_val_structure_neighbor_relative(i)))
+end
+
+
+
+
+
+for i=1:length(aa_labels)
+    
+    temp_idx2=ismember(at_residue,aa_labels{i});
+    
+    v1=at_asa(logical(temp_idx1.*temp_idx2));
+    v2=at_asa(logical(~temp_idx1.*temp_idx2));
+    
+    at_mean_residue_asa_relative(i)=mean(v1,'omitnan')/mean(v2,'omitnan');
+    
+    [h p]=ttest2(v1,v2);
+    at_p_val_residue_asa_relative(i)=p;
+    
+    
+    v1=at_neighbor(logical(temp_idx1.*temp_idx2));
+    v2=at_neighbor(logical(~temp_idx1.*temp_idx2));
+    
+    at_mean_residue_neighbor_relative(i)=mean(v1,'omitnan')/mean(v2,'omitnan');
+    
+    [h p]=ttest2(v1,v2);
+    at_p_val_residue_neighbor_relative(i)=p;
+
+end
+
+subplot(2,2,3)
+hold on
+bar(at_mean_residue_asa_relative,'BaseValue',1)
+title('ASA')
+xticks(1:length(aa_labels))
+xticklabels(aa_labels)
+ylim([0.8 1.2])
+for i=1:length(at_p_val_residue_asa_relative)
+    text(i,0.85,num2str(at_p_val_residue_asa_relative(i)))
+end
+
+
+
+subplot(2,2,4)
+hold on
+bar(at_mean_residue_neighbor_relative,'BaseValue',1)
+title('neighbors')
+xticks(1:length(aa_labels))
+xticklabels(aa_labels)
+ylim([0.85 1.15])
+for i=1:length(at_p_val_residue_neighbor_relative)
+    text(i,0.92,num2str(at_p_val_residue_neighbor_relative(i)))
+end
+
+
+
+
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+figure_counter=figure_counter+1;
+
+
+
 
 
 
