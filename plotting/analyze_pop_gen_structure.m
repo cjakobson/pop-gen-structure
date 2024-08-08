@@ -3,8 +3,8 @@ clear
 
 tic
 
-filebase='/Users/cjakobson/';
-%filebase='/Users/christopherjakobson/';
+%filebase='/Users/cjakobson/';
+filebase='/Users/christopherjakobson/';
 
 figure_counter=1;
 
@@ -47,6 +47,10 @@ structure_labels={'alphahelix','310helix','pihelix','betasheet','betaladder',...
 
 aa_labels={'A','V','I','L','M','F','Y','W','S','T','N','Q','H','R','K','D','E','C','G','P'};
 
+
+hap_table=readtable([dependency_directory 'pbio.2005130.s003.xlsx'],'Sheet','A');
+
+essential_table=readtable([dependency_directory 'inviable_annotations_filtered_by_giaever.txt']);
 
 
 %general histograms/correlations for structure stats (just for all
@@ -396,6 +400,199 @@ for i=1:length(aa_labels)
     text(i,0.85,num2str(p(i)))
 end
 
+
+
+
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+figure_counter=figure_counter+1;
+
+
+
+
+%break down by essential/haploinsufficient/etc and by gene age
+ess_idx=ismember(genes_to_use,essential_table.GeneSystematicName);
+
+hap_idx=ismember(genes_to_use,hap_table.ORF);
+
+%ess_idx=hap_idx;
+
+
+mean_structure_asa_relative_ess=mean(gene_structure_asa_mat_1K(ess_idx,:)./...
+    gene_structure_asa_mat_sim(ess_idx,:),'omitnan');
+mean_structure_asa_relative_non_ess=mean(gene_structure_asa_mat_1K(~ess_idx,:)./...
+    gene_structure_asa_mat_sim(~ess_idx,:),'omitnan');
+
+mean_structure_neighbor_relative_ess=mean(gene_structure_neighbor_mat_1K(ess_idx,:)./...
+    gene_structure_neighbor_mat_sim(ess_idx,:),'omitnan');
+mean_structure_neighbor_relative_non_ess=mean(gene_structure_neighbor_mat_1K(~ess_idx,:)./...
+    gene_structure_neighbor_mat_sim(~ess_idx,:),'omitnan');
+
+
+
+mean_residue_asa_relative_ess=mean(gene_residue_asa_mat_1K(ess_idx,:)./...
+    gene_residue_asa_mat_sim(ess_idx,:),'omitnan');
+mean_residue_asa_relative_non_ess=mean(gene_residue_asa_mat_1K(~ess_idx,:)./...
+    gene_residue_asa_mat_sim(~ess_idx,:),'omitnan');
+
+mean_residue_neighbor_relative_ess=mean(gene_residue_neighbor_mat_1K(ess_idx,:)./...
+    gene_residue_neighbor_mat_sim(ess_idx,:),'omitnan');
+mean_residue_neighbor_relative_non_ess=mean(gene_residue_neighbor_mat_1K(~ess_idx,:)./...
+    gene_residue_neighbor_mat_sim(~ess_idx,:),'omitnan');
+
+
+figure('units','normalized','outerposition',[0 0 1 1])
+subplot(2,2,1)
+hold on
+bar([mean_structure_asa_relative_ess' mean_structure_asa_relative_non_ess'],'BaseValue',1)
+ylim([0.8 1.2])
+xticks(1:length(structure_labels))
+xticklabels(structure_labels)
+ylabel('1K/sim')
+title('ASA')
+legend({'essential','other'})
+
+
+
+
+subplot(2,2,2)
+hold on
+bar([mean_structure_neighbor_relative_ess' mean_structure_neighbor_relative_non_ess'],'BaseValue',1)
+ylim([0.8 1.2])
+xticks(1:length(structure_labels))
+xticklabels(structure_labels)
+ylabel('1K/sim')
+title('neighbors')
+legend({'essential','other'})
+ 
+
+
+
+
+subplot(2,2,3)
+hold on
+bar([mean_residue_asa_relative_ess' mean_residue_asa_relative_non_ess'],'BaseValue',1)
+ylim([0.5 1.5])
+xticks(1:length(aa_labels))
+xticklabels(aa_labels)
+ylabel('1K/sim')
+title('ASA')
+legend({'essential','other'})
+
+
+
+subplot(2,2,4)
+hold on
+bar([mean_residue_neighbor_relative_ess' mean_residue_neighbor_relative_non_ess'],'BaseValue',1)
+ylim([0.8 1.2])
+xticks(1:length(aa_labels))
+xticklabels(aa_labels)
+ylabel('1K/sim')
+title('neighbors')
+legend({'essential','other'})
+
+
+
+
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+figure_counter=figure_counter+1;
+
+
+
+gene_age_info=readtable([dependency_directory 'Supplementary_Data_4_Doughty_et_al_2020.xlsx']);
+
+group_labels={'Group I','Group II','Group III','WGD','Group IV','Group V'};
+
+gene_age=nan(length(genes_to_use),1);
+for i=1:length(genes_to_use)
+
+    temp_idx=ismember(gene_age_info.Var1,genes_to_use{i});
+
+    if sum(temp_idx)>0
+
+        gene_age(i)=find(ismember(group_labels,gene_age_info.Var2{temp_idx}));
+
+    end
+
+end
+
+ess_idx=gene_age==6;
+
+mean_structure_asa_relative_ess=mean(gene_structure_asa_mat_1K(ess_idx,:)./...
+    gene_structure_asa_mat_sim(ess_idx,:),'omitnan');
+mean_structure_asa_relative_non_ess=mean(gene_structure_asa_mat_1K(~ess_idx,:)./...
+    gene_structure_asa_mat_sim(~ess_idx,:),'omitnan');
+
+mean_structure_neighbor_relative_ess=mean(gene_structure_neighbor_mat_1K(ess_idx,:)./...
+    gene_structure_neighbor_mat_sim(ess_idx,:),'omitnan');
+mean_structure_neighbor_relative_non_ess=mean(gene_structure_neighbor_mat_1K(~ess_idx,:)./...
+    gene_structure_neighbor_mat_sim(~ess_idx,:),'omitnan');
+
+
+
+mean_residue_asa_relative_ess=mean(gene_residue_asa_mat_1K(ess_idx,:)./...
+    gene_residue_asa_mat_sim(ess_idx,:),'omitnan');
+mean_residue_asa_relative_non_ess=mean(gene_residue_asa_mat_1K(~ess_idx,:)./...
+    gene_residue_asa_mat_sim(~ess_idx,:),'omitnan');
+
+mean_residue_neighbor_relative_ess=mean(gene_residue_neighbor_mat_1K(ess_idx,:)./...
+    gene_residue_neighbor_mat_sim(ess_idx,:),'omitnan');
+mean_residue_neighbor_relative_non_ess=mean(gene_residue_neighbor_mat_1K(~ess_idx,:)./...
+    gene_residue_neighbor_mat_sim(~ess_idx,:),'omitnan');
+
+
+figure('units','normalized','outerposition',[0 0 1 1])
+subplot(2,2,1)
+hold on
+bar([mean_structure_asa_relative_ess' mean_structure_asa_relative_non_ess'],'BaseValue',1)
+ylim([0.8 1.2])
+xticks(1:length(structure_labels))
+xticklabels(structure_labels)
+ylabel('1K/sim')
+title('ASA')
+legend({'young','other'})
+
+
+
+
+subplot(2,2,2)
+hold on
+bar([mean_structure_neighbor_relative_ess' mean_structure_neighbor_relative_non_ess'],'BaseValue',1)
+ylim([0.8 1.2])
+xticks(1:length(structure_labels))
+xticklabels(structure_labels)
+ylabel('1K/sim')
+title('neighbors')
+legend({'young','other'})
+ 
+
+
+
+
+subplot(2,2,3)
+hold on
+bar([mean_residue_asa_relative_ess' mean_residue_asa_relative_non_ess'],'BaseValue',1)
+ylim([0.5 1.5])
+xticks(1:length(aa_labels))
+xticklabels(aa_labels)
+ylabel('1K/sim')
+title('ASA')
+legend({'young','other'})
+
+
+
+subplot(2,2,4)
+hold on
+bar([mean_residue_neighbor_relative_ess' mean_residue_neighbor_relative_non_ess'],'BaseValue',1)
+ylim([0.8 1.2])
+xticks(1:length(aa_labels))
+xticklabels(aa_labels)
+ylabel('1K/sim')
+title('neighbors')
+legend({'young','other'})
 
 
 
