@@ -11,7 +11,6 @@ figure_counter=1;
 code_directory=[filebase 'Documents/GitHub/pop-gen-structure/'];
 dependency_directory=[filebase 'Dropbox/JaroszLab/pop-gen-structure-dependencies/'];
 output_directory=[filebase 'Dropbox/JaroszLab/pop-gen-structure-output/'];
-
 addpath([code_directory 'data-prep'])
 addpath([code_directory 'plotting'])
 
@@ -519,54 +518,55 @@ for i=1:length(genes_to_use)
 
 end
 
-ess_idx=gene_age==6;
+young_idx=gene_age==6;
+old_idx=gene_age==1;
 
-mean_structure_asa_relative_ess=mean(gene_structure_asa_mat_1K(ess_idx,:)./...
-    gene_structure_asa_mat_sim(ess_idx,:),'omitnan');
-mean_structure_asa_relative_non_ess=mean(gene_structure_asa_mat_1K(~ess_idx,:)./...
-    gene_structure_asa_mat_sim(~ess_idx,:),'omitnan');
+mean_structure_asa_relative_old=mean(gene_structure_asa_mat_1K(old_idx,:)./...
+    gene_structure_asa_mat_sim(old_idx,:),'omitnan');
+mean_structure_asa_relative_young=mean(gene_structure_asa_mat_1K(young_idx,:)./...
+    gene_structure_asa_mat_sim(young_idx,:),'omitnan');
 
-mean_structure_neighbor_relative_ess=mean(gene_structure_neighbor_mat_1K(ess_idx,:)./...
-    gene_structure_neighbor_mat_sim(ess_idx,:),'omitnan');
-mean_structure_neighbor_relative_non_ess=mean(gene_structure_neighbor_mat_1K(~ess_idx,:)./...
-    gene_structure_neighbor_mat_sim(~ess_idx,:),'omitnan');
+mean_structure_neighbor_relative_old=mean(gene_structure_neighbor_mat_1K(old_idx,:)./...
+    gene_structure_neighbor_mat_sim(old_idx,:),'omitnan');
+mean_structure_neighbor_relative_young=mean(gene_structure_neighbor_mat_1K(young_idx,:)./...
+    gene_structure_neighbor_mat_sim(young_idx,:),'omitnan');
 
 
 
-mean_residue_asa_relative_ess=mean(gene_residue_asa_mat_1K(ess_idx,:)./...
-    gene_residue_asa_mat_sim(ess_idx,:),'omitnan');
-mean_residue_asa_relative_non_ess=mean(gene_residue_asa_mat_1K(~ess_idx,:)./...
-    gene_residue_asa_mat_sim(~ess_idx,:),'omitnan');
+mean_residue_asa_relative_old=mean(gene_residue_asa_mat_1K(old_idx,:)./...
+    gene_residue_asa_mat_sim(old_idx,:),'omitnan');
+mean_residue_asa_relative_young=mean(gene_residue_asa_mat_1K(young_idx,:)./...
+    gene_residue_asa_mat_sim(young_idx,:),'omitnan');
 
-mean_residue_neighbor_relative_ess=mean(gene_residue_neighbor_mat_1K(ess_idx,:)./...
-    gene_residue_neighbor_mat_sim(ess_idx,:),'omitnan');
-mean_residue_neighbor_relative_non_ess=mean(gene_residue_neighbor_mat_1K(~ess_idx,:)./...
-    gene_residue_neighbor_mat_sim(~ess_idx,:),'omitnan');
+mean_residue_neighbor_relative_old=mean(gene_residue_neighbor_mat_1K(old_idx,:)./...
+    gene_residue_neighbor_mat_sim(old_idx,:),'omitnan');
+mean_residue_neighbor_relative_young=mean(gene_residue_neighbor_mat_1K(young_idx,:)./...
+    gene_residue_neighbor_mat_sim(young_idx,:),'omitnan');
 
 
 figure('units','normalized','outerposition',[0 0 1 1])
 subplot(2,2,1)
 hold on
-bar([mean_structure_asa_relative_ess' mean_structure_asa_relative_non_ess'],'BaseValue',1)
+bar([mean_structure_asa_relative_old' mean_structure_asa_relative_young'],'BaseValue',1)
 ylim([0.8 1.2])
 xticks(1:length(structure_labels))
 xticklabels(structure_labels)
 ylabel('1K/sim')
 title('ASA')
-legend({'young','other'})
+legend({'old','young'})
 
 
 
 
 subplot(2,2,2)
 hold on
-bar([mean_structure_neighbor_relative_ess' mean_structure_neighbor_relative_non_ess'],'BaseValue',1)
+bar([mean_structure_neighbor_relative_old' mean_structure_neighbor_relative_young'],'BaseValue',1)
 ylim([0.8 1.2])
 xticks(1:length(structure_labels))
 xticklabels(structure_labels)
 ylabel('1K/sim')
 title('neighbors')
-legend({'young','other'})
+legend({'old','young'})
  
 
 
@@ -574,25 +574,25 @@ legend({'young','other'})
 
 subplot(2,2,3)
 hold on
-bar([mean_residue_asa_relative_ess' mean_residue_asa_relative_non_ess'],'BaseValue',1)
+bar([mean_residue_asa_relative_old' mean_residue_asa_relative_young'],'BaseValue',1)
 ylim([0.5 1.5])
 xticks(1:length(aa_labels))
 xticklabels(aa_labels)
 ylabel('1K/sim')
 title('ASA')
-legend({'young','other'})
+legend({'old','young'})
 
 
 
 subplot(2,2,4)
 hold on
-bar([mean_residue_neighbor_relative_ess' mean_residue_neighbor_relative_non_ess'],'BaseValue',1)
+bar([mean_residue_neighbor_relative_old' mean_residue_neighbor_relative_young'],'BaseValue',1)
 ylim([0.8 1.2])
 xticks(1:length(aa_labels))
 xticklabels(aa_labels)
 ylabel('1K/sim')
 title('neighbors')
-legend({'young','other'})
+legend({'old','young'})
 
 
 
@@ -600,6 +600,8 @@ set(gcf,'PaperPositionMode','auto')
 print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
 print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
+
+
 
 
 
