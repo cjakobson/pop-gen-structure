@@ -921,6 +921,7 @@ ylabel('number of missense variants')
 v1=sum(~isnan(af_mat_1K),2);
 subplot(2,4,2)
 histogram(v1)
+axis square
 xlabel('missense variants per gene')
 ylabel('number of genes')
 
@@ -1007,22 +1008,25 @@ for i=1:length(thresh_to_test)
 end
 
 subplot(2,4,5)
+hold on
 scatter(asa_effect_size,-log10(asa_p_val),10,'k','filled')
 xlim([0.8 1])
 xlabel('effect size (rare/common)')
 ylabel('-log10 p')
 title('ASA')
 ylim([0 350])
+axis square
 
 
 subplot(2,4,6)
+hold on
 scatter(neighbor_effect_size,-log10(neighbor_p_val),10,'k','filled')
 xlim([1 1.2])
 xlabel('effect size (rare/common)')
 ylabel('-log10 p')
 title('neighbors')
 ylim([0 350])
-
+axis square
 
 
 
@@ -1084,6 +1088,7 @@ for i=1:length(structure_labels)
     ylim([0 Inf])
     title(structure_labels{i})
     legend({'ASA','neighbors'})
+    axis square
     
 end
 
@@ -1159,6 +1164,9 @@ set(gcf,'PaperPositionMode','auto')
 print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
 print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
+
+
+%pick a threshold and make bar plots again
 
 
 %close all
@@ -1346,6 +1354,7 @@ print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
 
 
+%gnomad
 
 
 
