@@ -3,8 +3,8 @@ clear
 
 tic
 
-%filebase='/Users/cjakobson/';
-filebase='/Users/christopherjakobson/';
+filebase='/Users/cjakobson/';
+%filebase='/Users/christopherjakobson/';
 
 figure_counter=1;
 
@@ -122,13 +122,16 @@ bar(v_mean_asa_structure)
 title('ASA')
 xticks(1:length(structure_labels))
 xticklabels(structure_labels)
+axis square
+
+
 
 subplot(2,4,2)
 bar(v_mean_neighbor_structure)
 title('neighbors')
 xticks(1:length(structure_labels))
 xticklabels(structure_labels)
-
+axis square
 
 
 
@@ -208,7 +211,7 @@ figure_counter=figure_counter+1;
 
 figure('units','normalized','outerposition',[0 0 1 1])
 
-%break down the scatter by secondary structure
+
 for i=1:length(aa_labels)
     
     temp_idx=ismember(residue_mat,aa_labels{i});
@@ -406,6 +409,7 @@ set(gcf,'PaperPositionMode','auto')
 print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
 print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
+
 
 
 
@@ -902,6 +906,109 @@ writetable(to_output,[output_directory 'most_constrained_genes_neighbor.txt'])
 
 %close all
 
+residue_mat_1K(cellfun(@isempty,residue_mat_1K))={'NA'};
+
+
+[~,structure_mat]=structure_types(secondary_mat);
+
+%2D analysis by residue/structure
+mean_2D_asa_relative=nan(length(aa_labels),length(structure_labels));
+mean_2D_neighbor_relative=nan(length(aa_labels),length(structure_labels));
+for i=1:length(aa_labels)
+
+    for j=1:length(structure_labels)
+        
+        temp_residue_idx=ismember(residue_mat_1K,aa_labels{i});
+        temp_structure_idx=structure_mat_1K==j;
+        
+        temp_idx_to_use1=logical(temp_residue_idx.*temp_structure_idx);
+        
+        
+        temp_residue_idx=ismember(residue_mat,aa_labels{i});
+        temp_structure_idx=structure_mat==j;
+        
+        temp_idx_to_use2=logical(temp_residue_idx.*temp_structure_idx);
+        
+        
+        mean_2D_asa_relative(i,j)=mean(asa_mat_1K(temp_idx_to_use1),'omitnan')/...
+            mean(asa_mat(temp_idx_to_use2),'omitnan');
+        mean_2D_neighbor_relative(i,j)=mean(neighbor_mat_1K(temp_idx_to_use1),'omitnan')/...
+            mean(neighbor_mat(temp_idx_to_use2),'omitnan');
+        
+    end
+    
+end
+
+
+
+figure('units','normalized','outerposition',[0 0 1 1])
+
+
+subplot(2,6,1)
+imagesc(mean_2D_asa_relative,[1 1.7])
+yticks(1:length(aa_labels))
+yticklabels(aa_labels)
+xticks(1:length(structure_labels))
+xticklabels(structure_labels)
+xtickangle(45)
+title('ASA 1K/sim')
+
+m = size(get(gcf,'colormap'),1);
+%red to blue colormap
+if (mod(m,2) == 0)
+    % From [0 0 1] to [1 1 1], then [1 1 1] to [1 0 0];
+    m1 = m*0.5;
+    r = (0:m1-1)'/max(m1-1,1);
+    g = r;
+    r = [r; ones(m1,1)];
+    g = [g; flipud(g)];
+    b = flipud(r);
+else
+    % From [0 0 1] to [1 1 1] to [1 0 0];
+    m1 = floor(m*0.5);
+    r = (0:m1-1)'/max(m1,1);
+    g = r;
+    r = [r; ones(m1+1,1)];
+    g = [g; 1; flipud(g)];
+    b = flipud(r);
+end
+c = [r g b]; 
+%colormap(flipud(c))
+colormap(c)
+colorbar
+
+
+subplot(2,6,2)
+imagesc(mean_2D_neighbor_relative,[0.7 1])
+yticks(1:length(aa_labels))
+yticklabels(aa_labels)
+xticks(1:length(structure_labels))
+xticklabels(structure_labels)
+xtickangle(45)
+colormap(c)
+colorbar
+title('neighbors 1K/sim')
+
+
+subplot(2,4,3)
+v1=reshape(mean_2D_neighbor_relative,[],1);
+v2=reshape(mean_2D_asa_relative,[],1);
+scatter(v1,v2,25,'k','filled');
+axis square
+xlabel('neighbors 1K/sim')
+ylabel('ASA 1K/sim')
+xlim([0.7 1])
+ylim([1 1.7])
+
+
+
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+figure_counter=figure_counter+1;
+
+
+
 
 
 %start AF analysis
@@ -1102,7 +1209,6 @@ figure_counter=figure_counter+1;
 
 
 %also for residues
-residue_mat_1K(cellfun(@isempty,residue_mat_1K))={'NA'};
 
 
 
@@ -1167,6 +1273,13 @@ figure_counter=figure_counter+1;
 
 
 %pick a threshold and make bar plots again
+%af_thresh=
+
+
+
+%then do old/young split again
+
+
 
 
 %close all
@@ -1242,9 +1355,9 @@ for i=1:length(thresh_to_test)
 end
 
 
-%1% looks good
+%0.1% looks good
 
-at_af_thresh=0.01;
+at_af_thresh=0.001;
 temp_idx1=at_af<=at_af_thresh;
 
 for i=1:length(structure_labels)
@@ -1280,7 +1393,7 @@ ylim([0.8 1.2])
 for i=1:length(at_p_val_structure_asa_relative)
     text(i,0.85,num2str(at_p_val_structure_asa_relative(i)))
 end
-
+axis square
 
 
 subplot(2,4,4)
@@ -1293,7 +1406,7 @@ ylim([0.9 1.1])
 for i=1:length(at_p_val_structure_neighbor_relative)
     text(i,0.92,num2str(at_p_val_structure_neighbor_relative(i)))
 end
-
+axis square
 
 
 
@@ -1354,8 +1467,204 @@ print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
 
 
+
+
+
+
+
+
 %gnomad
 
+gnomad_data=readtable([dependency_directory 'human-data/misGnomadScrape.csv']);
+
+hs_af=gnomad_data.Var9;
+
+hs_asa=gnomad_data.sasa;
+hs_neighbor=gnomad_data.neighbors;
+
+[~,hs_structure]=structure_types(gnomad_data.secondary);
+hs_residue=gnomad_data.refAa;
+
+
+
+
+
+figure('units','normalized','outerposition',[0 0 1 1])
+subplot(2,4,1)
+histogram(hs_af,0:2e3:2.5e5)
+set(gca,'YScale','log')
+xlabel('gnomad AC')
+ylabel('frequency')
+axis square
+
+
+
+thresh_to_test=10.^(0:0.1:5);
+
+hs_asa_p_val=nan(length(thresh_to_test),1);
+hs_asa_effect_size=nan(length(thresh_to_test),1);
+
+hs_neighbor_p_val=nan(length(thresh_to_test),1);
+hs_neighbor_effect_size=nan(length(thresh_to_test),1);
+for i=1:length(thresh_to_test)
+    
+    temp_idx=hs_af<=thresh_to_test(i);
+    
+    if sum(sum(temp_idx))>0
+    
+        [h p]=ttest2(hs_asa(temp_idx),hs_asa(~temp_idx));
+
+        hs_asa_p_val(i)=p;
+        hs_asa_effect_size(i)=mean(hs_asa(temp_idx),'omitnan')./...
+            mean(hs_asa(~temp_idx),'omitnan');
+        
+        
+    
+        [h p]=ttest2(hs_neighbor(temp_idx),hs_neighbor(~temp_idx));
+
+        hs_neighbor_p_val(i)=p;
+        hs_neighbor_effect_size(i)=mean(hs_neighbor(temp_idx),'omitnan')./...
+            mean(hs_neighbor(~temp_idx),'omitnan');
+        
+    end
+    
+end
+
+
+subplot(2,4,2)
+hold on
+scatter(hs_asa_effect_size,-log10(hs_asa_p_val),50,'.k')
+scatter(hs_neighbor_effect_size,-log10(hs_neighbor_p_val),25,'ok')
+xlim([0.7 1.3])
+xlabel('effect size (rare/common)')
+ylabel('-log10 p')
+ylim([0 350])
+legend({'ASA','neighbors'})
+axis square
+v1=hs_asa_effect_size;
+v2=-log10(hs_asa_p_val);
+for i=1:length(thresh_to_test)
+    text(v1(i),v2(i),num2str(thresh_to_test(i)))
+end
+
+
+%use 200; pretty close to 0.1% here, as well
+
+
+
+hs_af_thresh=200;
+temp_idx1=hs_af<=hs_af_thresh;
+
+for i=1:length(structure_labels)
+    
+    temp_idx2=hs_structure==i;
+    
+    v1=hs_asa(logical(temp_idx1.*temp_idx2));
+    v2=hs_asa(logical(~temp_idx1.*temp_idx2));
+    
+    hs_mean_structure_asa_relative(i)=mean(v1,'omitnan')/mean(v2,'omitnan');
+    
+    [h p]=ttest2(v1,v2);
+    hs_p_val_structure_asa_relative(i)=p;
+    
+    
+    v1=hs_neighbor(logical(temp_idx1.*temp_idx2));
+    v2=hs_neighbor(logical(~temp_idx1.*temp_idx2));
+    
+    hs_mean_structure_neighbor_relative(i)=mean(v1,'omitnan')/mean(v2,'omitnan');
+    
+    [h p]=ttest2(v1,v2);
+    hs_p_val_structure_neighbor_relative(i)=p;
+
+end
+
+subplot(2,4,3)
+hold on
+bar(hs_mean_structure_asa_relative,'BaseValue',1)
+title('ASA')
+xticks(1:length(structure_labels))
+xticklabels(structure_labels)
+ylim([0.7 1.2])
+for i=1:length(hs_p_val_structure_asa_relative)
+    text(i,0.85,num2str(hs_p_val_structure_asa_relative(i)))
+end
+axis square
+
+
+subplot(2,4,4)
+hold on
+bar(hs_mean_structure_neighbor_relative,'BaseValue',1)
+title('neighbors')
+xticks(1:length(structure_labels))
+xticklabels(structure_labels)
+ylim([0.9 1.1])
+for i=1:length(hs_p_val_structure_neighbor_relative)
+    text(i,0.92,num2str(hs_p_val_structure_neighbor_relative(i)))
+end
+axis square
+
+
+
+
+for i=1:length(aa_labels)
+    
+    temp_idx2=ismember(hs_residue,aa_labels{i});
+    
+    v1=hs_asa(logical(temp_idx1.*temp_idx2));
+    v2=hs_asa(logical(~temp_idx1.*temp_idx2));
+    
+    hs_mean_residue_asa_relative(i)=mean(v1,'omitnan')/mean(v2,'omitnan');
+    
+    [h p]=ttest2(v1,v2);
+    hs_p_val_residue_asa_relative(i)=p;
+    
+    
+    v1=hs_neighbor(logical(temp_idx1.*temp_idx2));
+    v2=hs_neighbor(logical(~temp_idx1.*temp_idx2));
+    
+    hs_mean_residue_neighbor_relative(i)=mean(v1,'omitnan')/mean(v2,'omitnan');
+    
+    [h p]=ttest2(v1,v2);
+    hs_p_val_residue_neighbor_relative(i)=p;
+
+end
+
+subplot(2,2,3)
+hold on
+bar(hs_mean_residue_asa_relative,'BaseValue',1)
+title('ASA')
+xticks(1:length(aa_labels))
+xticklabels(aa_labels)
+ylim([0.7 1.3])
+for i=1:length(hs_p_val_residue_asa_relative)
+    text(i,0.85,num2str(hs_p_val_residue_asa_relative(i)))
+end
+
+
+
+subplot(2,2,4)
+hold on
+bar(hs_mean_residue_neighbor_relative,'BaseValue',1)
+title('neighbors')
+xticks(1:length(aa_labels))
+xticklabels(aa_labels)
+ylim([0.7 1.3])
+for i=1:length(hs_p_val_residue_neighbor_relative)
+    text(i,0.92,num2str(hs_p_val_residue_neighbor_relative(i)))
+end
+
+
+
+
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+figure_counter=figure_counter+1;
+
+
+
+
+%split by olfactory vs essential? haploinsufficient?
 
 
 
