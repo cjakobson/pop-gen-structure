@@ -50,6 +50,15 @@ Fig 6
 
 
 data prep
+-import annotated 1K VCF
+	-[need to review this function]
+-make CSVs of gitter data -- disregard +rad arm for now
+	-
+-calculate fitness fits and output to avoid recalculating
+	-
+
+
+
 X-alphafold structure PDBs
 	-download from AF website
 X-dssp .txt files
@@ -64,12 +73,9 @@ X-generate mutation tables
 	-generate_mutation_tables.m [simulate_snps.m]
 X-make gene-wise matrices of ASA, neighbors, secondary structure for each residue
 	-check_files_systematic.m
--import annotated 1K VCF
-	-[need to review this function]
 X-shard 1K by gene and make table of all 1K mutation positions and allele frequencies by gene; similarly for simulated mutation positions
 	-shard_1K_by_gene.m
--match 1K to structure data -- do this during analysis? should be fast enough
-	-
+X-match 1K to structure data -- do this during analysis? should be fast enough
 
 
 existing workflow

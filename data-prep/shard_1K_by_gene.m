@@ -102,6 +102,7 @@ max(n_possible)
 
 
 mutation_mat_simulated=nan(length(genes_to_use),max(n_possible));
+ts_mat_simulated=nan(length(genes_to_use),max(n_possible));
 
 for i=1:length(genes_to_use)
     
@@ -113,10 +114,15 @@ for i=1:length(genes_to_use)
     
     mutation_mat_simulated(i,1:sum(temp_idx))=output_table.residue_number(temp_idx);
     
+    %also Ts/Tv
+    ts_mat_simulated(i,1:sum(temp_idx))=output_table.is_ts(temp_idx);
+    
+    
 end
 
 
 save([dependency_directory 'simulated_mutation_positions.mat'],'mutation_mat_simulated')
+save([dependency_directory 'simulated_mutation_tstv.mat'],'ts_mat_simulated')
 
 
 
