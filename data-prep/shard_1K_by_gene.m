@@ -126,6 +126,45 @@ save([dependency_directory 'simulated_mutation_tstv.mat'],'ts_mat_simulated')
 
 
 
+%superfam domain boundaries
+domain_input=readtable([dependency_directory 'Saccharomyces_cerevisiae_SUPERFAMILY_domains.txt']);
+
+for i=1:length(genes_to_use)
+    
+    query_gene=genes_to_use{i};
+    
+    temp_idx=find(ismember(domain_input.SequenceID,query_gene));
+    
+    v_temp=[];
+    
+    if length(temp_idx)>0
+    
+        for j=1:length(temp_idx)
+
+            temp_boundaries=strsplit(domain_input.RegionOfAssignment{temp_idx(j)},',');
+
+            for k=1:length(temp_boundaries)
+
+                temp_str=strsplit(temp_boundaries{k},'-');
+
+                left_bound=str2num(temp_str{1});
+                right_bound=str2num(temp_str{2});
+
+                v_temp(left_bound:right_bound)=1;
+
+            end
+
+        end
+
+        domain_mat(i,1:length(v_temp))=v_temp;
+        
+    end
+    
+end
+
+
+save([dependency_directory 'superfam_domain_boundaries.mat'],'domain_mat')
+
 toc
 
 

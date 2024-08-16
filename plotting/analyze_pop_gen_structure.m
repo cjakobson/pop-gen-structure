@@ -27,6 +27,7 @@ load([dependency_directory 'asa_data.mat'])
 load([dependency_directory 'neighbor_data.mat'])
 load([dependency_directory 'residue_data.mat'])
 load([dependency_directory 'secondary_structure_data.mat'])
+load([dependency_directory 'superfam_domain_boundaries.mat'])
 
 %make compatible with ismember
 residue_mat(cellfun(@isempty,residue_mat))={'NA'};
@@ -722,6 +723,11 @@ asa_mat_1K=nan(size(af_mat_1K));
 neighbor_mat_1K=nan(size(af_mat_1K));
 residue_mat_1K=cell(size(af_mat_1K));
 structure_mat_1K=nan(size(af_mat_1K));
+
+asa_mat_sim=nan(size(mutation_mat_simulated));
+neighbor_mat_sim=nan(size(mutation_mat_simulated));
+residue_mat_sim=cell(size(mutation_mat_simulated));
+structure_mat_sim=nan(size(mutation_mat_simulated));
 %gene-wise stats
 for i=1:length(genes_to_use)
     
@@ -741,6 +747,7 @@ for i=1:length(genes_to_use)
     
     %also build matrices to compare to AF
     asa_mat_1K(i,1:length(pos_1K))=temp_asa(pos_1K);
+    asa_mat_sim(i,1:length(pos_sim))=temp_asa(pos_sim);
     
     asa_1K(i)=mean(temp_asa(pos_1K));
     asa_sim(i)=mean(temp_asa(pos_sim));
@@ -748,6 +755,7 @@ for i=1:length(genes_to_use)
     
     
     neighbor_mat_1K(i,1:length(pos_1K))=temp_neighbor(pos_1K);
+    neighbor_mat_sim(i,1:length(pos_sim))=temp_neighbor(pos_sim);
     
     neighbor_1K(i)=mean(temp_neighbor(pos_1K));
     neighbor_sim(i)=mean(temp_neighbor(pos_sim));
@@ -755,6 +763,9 @@ for i=1:length(genes_to_use)
     
     residue_mat_1K(i,1:length(pos_1K))=temp_residue(pos_1K);
     structure_mat_1K(i,1:length(pos_1K))=temp_secondary(pos_1K);
+        
+    residue_mat_sim(i,1:length(pos_sim))=temp_residue(pos_sim);
+    structure_mat_sim(i,1:length(pos_sim))=temp_secondary(pos_sim);
     
     %also how many mutations fixed relative to all possible
     %to control for general essentiality
@@ -907,7 +918,7 @@ writetable(to_output,[output_directory 'most_constrained_genes_neighbor.txt'])
 %close all
 
 residue_mat_1K(cellfun(@isempty,residue_mat_1K))={'NA'};
-
+residue_mat_sim(cellfun(@isempty,residue_mat_sim))={'NA'};
 
 [~,structure_mat]=structure_types(secondary_mat);
 
@@ -915,25 +926,26 @@ residue_mat_1K(cellfun(@isempty,residue_mat_1K))={'NA'};
 mean_2D_asa_relative=nan(length(aa_labels),length(structure_labels));
 mean_2D_neighbor_relative=nan(length(aa_labels),length(structure_labels));
 for i=1:length(aa_labels)
-
+    
+    temp_residue_idx1=ismember(residue_mat_1K,aa_labels{i});
+    temp_residue_idx2=ismember(residue_mat_sim,aa_labels{i});
+    
     for j=1:length(structure_labels)
         
-        temp_residue_idx=ismember(residue_mat_1K,aa_labels{i});
-        temp_structure_idx=structure_mat_1K==j;
+        temp_structure_idx1=structure_mat_1K==j;
         
-        temp_idx_to_use1=logical(temp_residue_idx.*temp_structure_idx);
+        temp_idx_to_use1=logical(temp_residue_idx1.*temp_structure_idx1);
         
         
-        temp_residue_idx=ismember(residue_mat,aa_labels{i});
-        temp_structure_idx=structure_mat==j;
+        temp_structure_idx2=structure_mat_sim==j;
         
-        temp_idx_to_use2=logical(temp_residue_idx.*temp_structure_idx);
+        temp_idx_to_use2=logical(temp_residue_idx2.*temp_structure_idx2);
         
         
         mean_2D_asa_relative(i,j)=mean(asa_mat_1K(temp_idx_to_use1),'omitnan')/...
-            mean(asa_mat(temp_idx_to_use2),'omitnan');
+            mean(asa_mat_sim(temp_idx_to_use2),'omitnan');
         mean_2D_neighbor_relative(i,j)=mean(neighbor_mat_1K(temp_idx_to_use1),'omitnan')/...
-            mean(neighbor_mat(temp_idx_to_use2),'omitnan');
+            mean(neighbor_mat_sim(temp_idx_to_use2),'omitnan');
         
     end
     
@@ -1002,10 +1014,317 @@ ylim([1 1.7])
 
 
 
+
+
+
 set(gcf,'PaperPositionMode','auto')
 print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
 print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
+
+
+
+
+
+[n_proteins,max_residues]=size(asa_mat);
+[~,n_cols]=size(domain_mat);
+domain_mat(:,(n_cols+1):max_residues)=0;
+
+[n_rows,~]=size(domain_mat);
+domain_mat((n_rows+1):n_proteins,:)=0;
+
+%also integrate information on whether residue is within SuperFam domain
+%gene-wise stats
+domain_mat_1K=nan(size(asa_mat_1K));
+domain_mat_sim=nan(size(asa_mat_sim));
+for i=1:length(genes_to_use)
+    
+    cols_to_use=~isnan(asa_mat(i,:));
+    
+    temp_asa=asa_mat(i,cols_to_use);
+    temp_neighbor=neighbor_mat(i,cols_to_use);
+    temp_residue=residue_mat(i,cols_to_use);
+    [~,temp_secondary]=structure_types(secondary_mat(i,cols_to_use));
+    
+    v_domain=logical(domain_mat(i,find(cols_to_use)));
+    
+    pos_1K=mutation_mat_1K(i,:);
+    pos_1K=pos_1K(~isnan(pos_1K));
+    pos_1K(pos_1K>protein_length(i))=[];
+    
+    v_domain_1K=logical(domain_mat(i,pos_1K));
+    domain_mat_1K(i,1:length(v_domain_1K))=v_domain_1K;
+
+    pos_sim=mutation_mat_simulated(i,:);
+    pos_sim=pos_sim(~isnan(pos_sim));
+    
+    v_domain_sim=logical(domain_mat(i,pos_sim));
+    domain_mat_sim(i,1:length(v_domain_sim))=v_domain_sim;
+    
+    temp_asa_1K=temp_asa(pos_1K);
+    
+    asa_1K_domain(i)=mean(temp_asa_1K(v_domain_1K));
+    asa_1K_nondomain(i)=mean(temp_asa_1K(~v_domain_1K));
+    
+    temp_asa_sim=temp_asa(pos_sim);
+    
+    asa_sim_domain(i)=mean(temp_asa_sim(v_domain_sim));
+    asa_sim_nondomain(i)=mean(temp_asa_sim(~v_domain_sim));
+    
+    
+    rel_asa_domain(i)=asa_1K_domain(i)/asa_sim_domain(i);
+    rel_asa_nondomain(i)=asa_1K_nondomain(i)/asa_sim_nondomain(i);
+    
+    
+    
+    temp_neighbor_1K=temp_neighbor(pos_1K);
+    
+    neighbor_1K_domain(i)=mean(temp_neighbor_1K(v_domain_1K));
+    neighbor_1K_nondomain(i)=mean(temp_neighbor_1K(~v_domain_1K));
+    
+    temp_neighbor_sim=temp_neighbor(pos_sim);
+    
+    neighbor_sim_domain(i)=mean(temp_neighbor_sim(v_domain_sim));
+    neighbor_sim_nondomain(i)=mean(temp_neighbor_sim(~v_domain_sim));
+    
+    
+    rel_neighbor_domain(i)=neighbor_1K_domain(i)/neighbor_sim_domain(i);
+    rel_neighbor_nondomain(i)=neighbor_1K_nondomain(i)/neighbor_sim_nondomain(i);
+    
+    
+    %also how many mutations fixed relative to all possible
+    %to control for general essentiality
+    
+    
+    
+    mutations_1K_domain(i)=sum(v_domain_1K)/sum(v_domain);
+    mutations_1K_nondomain(i)=sum(~v_domain_1K)/sum(~v_domain);
+    
+    mutations_sim_domain(i)=sum(v_domain_sim)/sum(v_domain);
+    mutations_sim_nondomain(i)=sum(~v_domain_sim)/sum(~v_domain);
+    
+    rel_mutations_domain(i)=mutations_1K_domain(i)/mutations_sim_domain(i);
+    rel_mutations_nondomain(i)=mutations_1K_nondomain(i)/mutations_sim_nondomain(i);
+    
+end
+
+
+
+
+figure('units','normalized','outerposition',[0 0 1 1])
+
+subplot(2,4,1)
+hold on
+v1=rel_asa_domain;
+v1(isnan(v1))=[];
+to_plot{1}=v1;
+
+v2=rel_asa_nondomain;
+v2(isnan(v2))=[];
+to_plot{2}=v2;
+
+histogram(v1,0:0.05:2,'Normalization','probability')
+histogram(v2,0:0.05:2,'Normalization','probability')
+legend({'in domain','outside domain'})
+title('ASA')
+axis square
+xlabel('1K/sim')
+
+
+subplot(2,4,2)
+hold on
+v1=rel_neighbor_domain;
+v1(isnan(v1))=[];
+to_plot{3}=v1;
+
+v2=rel_neighbor_nondomain;
+v2(isnan(v2))=[];
+to_plot{4}=v2;
+
+histogram(v1,0:0.05:2,'Normalization','probability')
+histogram(v2,0:0.05:2,'Normalization','probability')
+legend({'in domain','outside domain'})
+title('neighbors')
+axis square
+xlabel('1K/sim')
+
+
+
+subplot(2,4,3)
+hold on
+easy_box(to_plot)
+axis square
+ylim([0 2])
+plot(xlim,[1 1],':r')
+for i=1:length(to_plot)
+    [h p]=ttest(to_plot{i}-1);
+    text(i,0.2,num2str(p))
+end
+xtickangle(45)
+xticklabels({'ASA in domain','ASA outside',...
+    'neighbor in domain','neighbor outside'})
+xlabel('1K/sim')
+
+
+
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+figure_counter=figure_counter+1;
+
+
+
+%rerun per residue and per structure analysis for in domain vs not
+
+%2D analysis by residue/structure
+mean_2D_asa_relative_domain=nan(length(aa_labels),length(structure_labels));
+mean_2D_asa_relative_nondomain=nan(length(aa_labels),length(structure_labels));
+
+mean_2D_neighbor_relative_domain=nan(length(aa_labels),length(structure_labels));
+mean_2D_neighbor_relative_nondomain=nan(length(aa_labels),length(structure_labels));
+
+domain_mat_1K(isnan(domain_mat_1K))=0;
+domain_mat_sim(isnan(domain_mat_sim))=0;
+for i=1:length(aa_labels)
+    
+    for j=1:length(structure_labels)
+        
+        temp_residue_idx=ismember(residue_mat_1K,aa_labels{i});
+        temp_structure_idx=structure_mat_1K==j;
+        
+        temp_idx_to_use1=logical(temp_residue_idx.*temp_structure_idx.*domain_mat_1K);
+        
+        
+        temp_residue_idx=ismember(residue_mat_sim,aa_labels{i});
+        temp_structure_idx=structure_mat_sim==j;
+        
+        temp_idx_to_use2=logical(temp_residue_idx.*temp_structure_idx.*domain_mat_sim);
+        
+        
+        mean_2D_asa_relative_domain(i,j)=mean(asa_mat_1K(temp_idx_to_use1),'omitnan')/...
+            mean(asa_mat_sim(temp_idx_to_use2),'omitnan');
+        mean_2D_neighbor_relative_domain(i,j)=mean(neighbor_mat_1K(temp_idx_to_use1),'omitnan')/...
+            mean(neighbor_mat_sim(temp_idx_to_use2),'omitnan');
+        
+        
+        
+        temp_residue_idx=ismember(residue_mat_1K,aa_labels{i});
+        temp_structure_idx=structure_mat_1K==j;
+        
+        temp_idx_to_use1=logical(temp_residue_idx.*temp_structure_idx.*~domain_mat_1K);
+        
+        
+        temp_residue_idx=ismember(residue_mat_sim,aa_labels{i});
+        temp_structure_idx=structure_mat_sim==j;
+        
+        temp_idx_to_use2=logical(temp_residue_idx.*temp_structure_idx.*~domain_mat_sim);
+        
+        
+        mean_2D_asa_relative_nondomain(i,j)=mean(asa_mat_1K(temp_idx_to_use1),'omitnan')/...
+            mean(asa_mat_sim(temp_idx_to_use2),'omitnan');
+        mean_2D_neighbor_relative_nondomain(i,j)=mean(neighbor_mat_1K(temp_idx_to_use1),'omitnan')/...
+            mean(neighbor_mat_sim(temp_idx_to_use2),'omitnan');
+        
+    end
+    
+end
+
+
+
+
+
+
+figure('units','normalized','outerposition',[0 0 1 1])
+
+
+subplot(2,6,1)
+imagesc(mean_2D_asa_relative_domain,[1 1.7])
+yticks(1:length(aa_labels))
+yticklabels(aa_labels)
+xticks(1:length(structure_labels))
+xticklabels(structure_labels)
+xtickangle(45)
+title('ASA 1K/sim in domain')
+colormap(c)
+colorbar
+
+subplot(2,6,2)
+imagesc(mean_2D_asa_relative_nondomain,[1 1.7])
+yticks(1:length(aa_labels))
+yticklabels(aa_labels)
+xticks(1:length(structure_labels))
+xticklabels(structure_labels)
+xtickangle(45)
+title('ASA 1K/sim outside domain')
+colormap(c)
+colorbar
+
+
+
+
+subplot(2,6,3)
+imagesc(mean_2D_neighbor_relative_domain,[0.7 1])
+yticks(1:length(aa_labels))
+yticklabels(aa_labels)
+xticks(1:length(structure_labels))
+xticklabels(structure_labels)
+xtickangle(45)
+colormap(c)
+colorbar
+title('neighbors 1K/sim in domain')
+
+
+
+subplot(2,6,4)
+imagesc(mean_2D_neighbor_relative_nondomain,[0.7 1])
+yticks(1:length(aa_labels))
+yticklabels(aa_labels)
+xticks(1:length(structure_labels))
+xticklabels(structure_labels)
+xtickangle(45)
+colormap(c)
+colorbar
+title('neighbors 1K/sim outside domain')
+
+
+
+
+
+subplot(2,4,5)
+v1=reshape(mean_2D_neighbor_relative_domain,[],1);
+v2=reshape(mean_2D_asa_relative_domain,[],1);
+scatter(v1,v2,25,'k','filled');
+axis square
+xlabel('neighbors 1K/sim')
+ylabel('ASA 1K/sim')
+title('in domain')
+xlim([0.7 1])
+ylim([1 1.7])
+
+
+subplot(2,4,6)
+v1=reshape(mean_2D_neighbor_relative_nondomain,[],1);
+v2=reshape(mean_2D_asa_relative_nondomain,[],1);
+scatter(v1,v2,25,'k','filled');
+axis square
+xlabel('neighbors 1K/sim')
+ylabel('ASA 1K/sim')
+title('outside domain')
+xlim([0.7 1])
+ylim([1 1.7])
+
+
+
+
+
+
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+figure_counter=figure_counter+1;
+
+
+
 
 
 
@@ -1218,7 +1537,7 @@ asa_p_val=nan(length(aa_labels),length(thresh_to_test));
 asa_effect_size=nan(length(aa_labels),length(thresh_to_test));
 neighbor_p_val=nan(length(aa_labels),length(thresh_to_test));
 neighbor_effect_size=nan(length(aa_labels),length(thresh_to_test));
-%repeat this analysis subsetting by structure
+
 for i=1:length(aa_labels)
     
     temp_idx1=ismember(residue_mat_1K,aa_labels{i});
@@ -1273,11 +1592,138 @@ figure_counter=figure_counter+1;
 
 
 %pick a threshold and make bar plots again
-%af_thresh=
+af_thresh=0.001;
+
+
+figure('units','normalized','outerposition',[0 0 1 1])
+
+asa_p_val=nan(length(structure_labels),1);
+asa_effect_size=nan(length(structure_labels),1);
+neighbor_p_val=nan(length(structure_labels),1);
+neighbor_effect_size=nan(length(structure_labels),1);
+%repeat this analysis subsetting by structure
+for i=1:length(structure_labels)
+    
+    temp_idx1=structure_mat_1K==i;
+    
+    temp_idx2=af_mat_1K<=af_thresh;
+
+    temp_idx3=logical(temp_idx1.*temp_idx2);
+    temp_idx4=logical(temp_idx1.*~temp_idx2);
+    
+    [h p]=ttest2(asa_mat_1K(temp_idx3),asa_mat_1K(temp_idx4));
+
+    asa_p_val(i)=p;
+    asa_effect_size(i)=mean(asa_mat_1K(temp_idx3),'omitnan')./...
+        mean(asa_mat_1K(temp_idx4),'omitnan');
 
 
 
-%then do old/young split again
+    [h p]=ttest2(neighbor_mat_1K(temp_idx3),neighbor_mat_1K(temp_idx4));
+
+    neighbor_p_val(i)=p;
+    neighbor_effect_size(i)=mean(neighbor_mat_1K(temp_idx3),'omitnan')./...
+        mean(neighbor_mat_1K(temp_idx4),'omitnan');
+
+end
+
+
+subplot(2,2,1)
+hold on
+bar(asa_effect_size,'BaseValue',1)
+ylim([0.8 1.2])
+xticks(1:length(structure_labels))
+xticklabels(structure_labels)
+ylabel('rare/common')
+title('ASA')
+
+
+
+
+subplot(2,2,2)
+hold on
+bar(neighbor_effect_size,'BaseValue',1)
+ylim([0.8 1.2])
+xticks(1:length(structure_labels))
+xticklabels(structure_labels)
+ylabel('rare/common')
+title('neighbors')
+
+
+
+
+
+asa_p_val=nan(length(aa_labels),1);
+asa_effect_size=nan(length(aa_labels),1);
+neighbor_p_val=nan(length(aa_labels),1);
+neighbor_effect_size=nan(length(aa_labels),1);
+%repeat this analysis subsetting by structure
+for i=1:length(aa_labels)
+    
+    temp_idx1=ismember(residue_mat_1K,aa_labels{i});
+    
+    temp_idx2=af_mat_1K<=af_thresh;
+
+    temp_idx3=logical(temp_idx1.*temp_idx2);
+    temp_idx4=logical(temp_idx1.*~temp_idx2);
+    
+    [h p]=ttest2(asa_mat_1K(temp_idx3),asa_mat_1K(temp_idx4));
+
+    asa_p_val(i)=p;
+    asa_effect_size(i)=mean(asa_mat_1K(temp_idx3),'omitnan')./...
+        mean(asa_mat_1K(temp_idx4),'omitnan');
+
+
+
+    [h p]=ttest2(neighbor_mat_1K(temp_idx3),neighbor_mat_1K(temp_idx4));
+
+    neighbor_p_val(i)=p;
+    neighbor_effect_size(i)=mean(neighbor_mat_1K(temp_idx3),'omitnan')./...
+        mean(neighbor_mat_1K(temp_idx4),'omitnan');
+
+end
+
+
+subplot(2,2,3)
+hold on
+bar(asa_effect_size,'BaseValue',1)
+ylim([0.7 1.3])
+xticks(1:length(aa_labels))
+xticklabels(aa_labels)
+ylabel('rare/common')
+title('ASA')
+
+
+
+
+subplot(2,2,4)
+hold on
+bar(neighbor_effect_size,'BaseValue',1)
+ylim([0.7 1.3])
+xticks(1:length(aa_labels))
+xticklabels(aa_labels)
+ylabel('rare/common')
+title('neighbors')
+
+
+
+
+
+
+
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+figure_counter=figure_counter+1;
+
+
+
+
+
+%do old/young split again?
+
+
+
 
 
 
@@ -1555,6 +2001,9 @@ end
 hs_af_thresh=200;
 temp_idx1=hs_af<=hs_af_thresh;
 
+%sum(temp_idx1)
+%sum(~temp_idx1)
+
 for i=1:length(structure_labels)
     
     temp_idx2=hs_structure==i;
@@ -1665,6 +2114,126 @@ figure_counter=figure_counter+1;
 
 
 %split by olfactory vs essential? haploinsufficient?
+hap_table=readtable([dependency_directory '1-s2.0-S2211124722003175-mmc2.xlsx']);
+hap_genes=hap_table.Symbol;
+
+
+%load pLOF data
+lof_table=readtable([dependency_directory 'supplementary_dataset_11_full_constraint_metrics.tsv'],...
+    'FileType','text');
+
+idx_to_keep=ismember(lof_table.canonical,'true');
+lof_table=lof_table(idx_to_keep,:);
+
+lof_table(isnan(lof_table.oe_lof_upper_rank),:)=[];
+
+[~,sort_idx]=sort(lof_table.oe_lof_upper_rank,'descend');
+
+
+
+
+n_bins=5;
+
+%most to least essential quintiles
+quintile_size=floor(length(sort_idx)/n_bins);
+
+for i=1:n_bins
+    
+    temp_idx=(i-1)*quintile_size+(1:quintile_size);
+    gene_sets{i}=lof_table.gene(sort_idx(temp_idx));
+    
+end
+
+
+
+%temp_idx3=ismember(gnomad_data.Var14,gene_sets{5});
+temp_idx3=ismember(gnomad_data.Var14,hap_genes);
+temp_idx4=ismember(gnomad_data.Var14,gene_sets{1});
+
+% temp_median=median(lof_table.oe_lof_upper_rank);
+% temp_idx3=ismember(gnomad_data.Var14,lof_table.gene(lof_table.oe_lof_upper_rank<temp_median));
+% temp_idx4=ismember(gnomad_data.Var14,lof_table.gene(lof_table.oe_lof_upper_rank>=temp_median));
+
+%scatter gene-wise stats instead of doing split?
+%might just be running out of common variants
+
+for i=1:length(structure_labels)
+    
+    temp_idx2=hs_structure==i;
+    
+    v1=hs_asa(logical(temp_idx1.*temp_idx2.*temp_idx3));
+    v2=hs_asa(logical(~temp_idx1.*temp_idx2.*temp_idx3));
+    
+    hs_mean_structure_asa_relative_hap(i)=mean(v1,'omitnan')/mean(v2,'omitnan');
+    
+    [h p]=ttest2(v1,v2);
+    hs_p_val_structure_asa_relative_hap(i)=p;
+    
+    v1=hs_asa(logical(temp_idx1.*temp_idx2.*temp_idx4));
+    v2=hs_asa(logical(~temp_idx1.*temp_idx2.*temp_idx4));
+    
+    hs_mean_structure_asa_relative_other(i)=mean(v1,'omitnan')/mean(v2,'omitnan');
+    
+    [h p]=ttest2(v1,v2);
+    hs_p_val_structure_asa_relative_other(i)=p;
+    
+    
+    
+    v1=hs_neighbor(logical(temp_idx1.*temp_idx2.*temp_idx3));
+    v2=hs_neighbor(logical(~temp_idx1.*temp_idx2.*temp_idx3));
+    
+    hs_mean_structure_neighbor_relative_hap(i)=mean(v1,'omitnan')/mean(v2,'omitnan');
+    
+    [h p]=ttest2(v1,v2);
+    hs_p_val_structure_neighbor_relative_hap(i)=p;
+    
+    
+    v1=hs_neighbor(logical(temp_idx1.*temp_idx2.*temp_idx4));
+    v2=hs_neighbor(logical(~temp_idx1.*temp_idx2.*temp_idx4));
+    
+    hs_mean_structure_neighbor_relative_other(i)=mean(v1,'omitnan')/mean(v2,'omitnan');
+    
+    [h p]=ttest2(v1,v2);
+    hs_p_val_structure_neighbor_relative_other(i)=p;
+
+end
+
+
+
+figure('units','normalized','outerposition',[0 0 1 1])
+
+subplot(2,2,1)
+hold on
+bar([hs_mean_structure_asa_relative_hap' hs_mean_structure_asa_relative_other'],'BaseValue',1)
+title('ASA')
+xticks(1:length(structure_labels))
+xticklabels(structure_labels)
+ylim([0.5 1.5])
+legend({'more ess.','less ess.'})
+
+
+
+subplot(2,2,2)
+hold on
+bar([hs_mean_structure_neighbor_relative_hap' hs_mean_structure_neighbor_relative_other'],'BaseValue',1)
+title('neighbors')
+xticks(1:length(structure_labels))
+xticklabels(structure_labels)
+ylim([0.8 1.2])
+legend({'more ess.','less ess.'})
+
+
+
+
+
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+figure_counter=figure_counter+1;
+
+
+
+
 
 
 

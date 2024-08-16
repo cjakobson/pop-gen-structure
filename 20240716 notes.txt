@@ -3,55 +3,13 @@ general code things
 
 
 
-analyses to do
-Fig 1
--basic breakdown of 1K vs all simulated for ASA and neighbors
-	-distributions and summary stats
-	-split Ts/Tv
--compare to syn for supp?
--neighbors as function of ASA or vice versa
--by gene -- crossplot summary statistic by gene (ASA vs neighbors)
-	-what characteristics to split by? molecular function? essentiality? haploinsufficient? gene age? complex member?
--by amino acid -- which are most constrained?
-	-cross-plot summary statistic by ref/alt combos as for genes?
--baseline ASA and neighbor stats by structure+residue
-
-XXor make Fig 1 about structure and residues and Fig 2 about genesXX
-XXcould work either way -- could do intro/genes/summary stats first then molecular detailsXX
-
-Fig 2
--break down by secondary structure
-	-split by Ts/Tv again to control for aa composition
--neighbors as function of ASA or vice versa for each secondary structure type
--by amino acid again?
-[-domain boundaries/architectures?]
-
-Fig 3
--AF histogram for 1K
--slide AF threshold and plot effect size/p-val
--breakdown by secondary structure
--by gene?
-
-Fig 4
--essentially as in Fig 3 but for At and Hs
-	-cross-plot by genes here too?
-
-Fig 5
--example curves over time for nonadapted/adapted
--population growth rates over time
--comapare to mutator => mutation-limited
--validation of growth rate in post-hoc measurements
-
-Fig 6
--WGS summary and breakdown of hits
--pooling and sequencing schematic
--deep dive on Primordium pool hits/frequencies+overlay on structure
-
 
 
 data prep
 -import annotated 1K VCF
 	-[need to review this function]
+-make various matrices for sim and 1K [needed for faster runtime on plotting script]
+	-
 -make CSVs of gitter data -- disregard +rad arm for now
 	-
 -calculate fitness fits and output to avoid recalculating
@@ -112,3 +70,47 @@ other directories
 -pop-gen-structure-dependencies
 
 
+
+analyses to do
+Fig 1
+-basic breakdown of 1K vs all simulated for ASA and neighbors
+	-distributions and summary stats
+	-split Ts/Tv
+-compare to syn for supp?
+-neighbors as function of ASA or vice versa
+-by gene -- crossplot summary statistic by gene (ASA vs neighbors)
+	-what characteristics to split by? molecular function? essentiality? haploinsufficient? gene age? complex member?
+-by amino acid -- which are most constrained?
+	-cross-plot summary statistic by ref/alt combos as for genes?
+-baseline ASA and neighbor stats by structure+residue
+
+XXor make Fig 1 about structure and residues and Fig 2 about genesXX
+XXcould work either way -- could do intro/genes/summary stats first then molecular detailsXX
+
+Fig 2
+-break down by secondary structure
+	-split by Ts/Tv again to control for aa composition
+-neighbors as function of ASA or vice versa for each secondary structure type
+-by amino acid again?
+[-domain boundaries/architectures?]
+
+Fig 3
+-AF histogram for 1K
+-slide AF threshold and plot effect size/p-val
+-breakdown by secondary structure
+-by gene?
+
+Fig 4
+-essentially as in Fig 3 but for At and Hs
+	-cross-plot by genes here too?
+
+Fig 5
+-example curves over time for nonadapted/adapted
+-population growth rates over time
+-comapare to mutator => mutation-limited
+-validation of growth rate in post-hoc measurements
+
+Fig 6
+-WGS summary and breakdown of hits
+-pooling and sequencing schematic
+-deep dive on Primordium pool hits/frequencies+overlay on structure
