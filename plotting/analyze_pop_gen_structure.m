@@ -95,8 +95,8 @@ ylabel('neighbors')
 
 
 set(gcf,'PaperPositionMode','auto')
-print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
-print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
 
 
@@ -164,8 +164,8 @@ xticklabels(aa_labels)
 
 
 set(gcf,'PaperPositionMode','auto')
-print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
-print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
 
 
@@ -199,8 +199,8 @@ end
 
 
 set(gcf,'PaperPositionMode','auto')
-print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
-print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
 
 
@@ -238,8 +238,8 @@ end
 
 
 set(gcf,'PaperPositionMode','auto')
-print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
-print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
 
 
@@ -407,8 +407,8 @@ end
 
 
 set(gcf,'PaperPositionMode','auto')
-print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
-print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
 
 
@@ -500,8 +500,8 @@ legend({'essential','other'})
 
 
 set(gcf,'PaperPositionMode','auto')
-print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
-print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
 
 
@@ -602,8 +602,8 @@ legend({'old','young'})
 
 
 set(gcf,'PaperPositionMode','auto')
-print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
-print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
 
 
@@ -706,8 +706,8 @@ end
 
 
 set(gcf,'PaperPositionMode','auto')
-print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
-print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
 
 
@@ -864,8 +864,8 @@ ylabel('relative neighbors 1K/sim')
 
 
 set(gcf,'PaperPositionMode','auto')
-print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
-print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
 
 
@@ -1018,8 +1018,8 @@ ylim([1 1.7])
 
 
 set(gcf,'PaperPositionMode','auto')
-print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
-print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
 
 
@@ -1168,8 +1168,8 @@ xlabel('1K/sim')
 
 
 set(gcf,'PaperPositionMode','auto')
-print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
-print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
 
 
@@ -1319,8 +1319,8 @@ ylim([1 1.7])
 
 
 set(gcf,'PaperPositionMode','auto')
-print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
-print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
 
 
@@ -1458,8 +1458,8 @@ axis square
 
 
 set(gcf,'PaperPositionMode','auto')
-print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
-print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
 
 
@@ -1521,8 +1521,8 @@ end
 
 
 set(gcf,'PaperPositionMode','auto')
-print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
-print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
 
 
@@ -1586,8 +1586,8 @@ end
 
 
 set(gcf,'PaperPositionMode','auto')
-print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
-print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
 
 
@@ -1712,8 +1712,8 @@ title('neighbors')
 
 
 set(gcf,'PaperPositionMode','auto')
-print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
-print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
 
 
@@ -1908,8 +1908,8 @@ end
 
 
 set(gcf,'PaperPositionMode','auto')
-print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
-print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
 
 
@@ -2106,8 +2106,8 @@ end
 
 
 set(gcf,'PaperPositionMode','auto')
-print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
-print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
 
 
@@ -2227,8 +2227,8 @@ legend({'more ess.','less ess.'})
 
 
 set(gcf,'PaperPositionMode','auto')
-print([output_directory 'figure_' num2str(figure_counter)],'-dsvg','-r0')
-print([output_directory 'figure_' num2str(figure_counter)],'-djpeg','-r300')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-dsvg','-r0')
+print([output_directory 'structure_figure_' num2str(figure_counter)],'-djpeg','-r300')
 figure_counter=figure_counter+1;
 
 
