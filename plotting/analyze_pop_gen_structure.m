@@ -3,14 +3,16 @@ clear
 
 tic
 
-filebase='/Users/cjakobson/';
-%filebase='/Users/christopherjakobson/';
+%filebase='/Users/cjakobson/';
+filebase='/Users/christopherjakobson/';
 
 figure_counter=1;
 
 code_directory=[filebase 'Documents/GitHub/pop-gen-structure/'];
 dependency_directory=[filebase 'Dropbox/JaroszLab/pop-gen-structure-dependencies/'];
 output_directory=[filebase 'Dropbox/JaroszLab/pop-gen-structure-output/'];
+
+
 addpath([code_directory 'data-prep'])
 addpath([code_directory 'plotting'])
 
