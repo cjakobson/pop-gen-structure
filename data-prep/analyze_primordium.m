@@ -46,7 +46,7 @@ end
 
 base_array={'A','C','T','G'};
 
-read_thresh=100;
+read_thresh=30;%100;
 missense_position=cell(length(to_read),1);
 ref_base=missense_position;
 alt_base=missense_position;
@@ -179,15 +179,23 @@ for i=1:length(missense_encoded)
         
         temp_range=(3*temp_residue-2):(3*temp_residue);
         
-        temp_ref_codon=fpr1_seq.Sequence(temp_range);
-        
-        temp_idx=ismember(temp_range,missense_pos_fpr1{i}(j));
-        
-        temp_alt_codon=temp_ref_codon;
-        temp_alt_codon(temp_idx)=alt_base{i}{j};
-        
-        missense_encoded{i}{j}=[nt2aa(temp_ref_codon,'AlternativeStartCodons','false')...
-            num2str(temp_residue) nt2aa(temp_alt_codon,'AlternativeStartCodons','false')];
+        if (temp_range(1)>0)&&(temp_range(2)<length(fpr1_seq.Sequence))
+
+            temp_ref_codon=fpr1_seq.Sequence(temp_range);
+            
+            temp_idx=ismember(temp_range,missense_pos_fpr1{i}(j));
+            
+            temp_alt_codon=temp_ref_codon;
+            temp_alt_codon(temp_idx)=alt_base{i}{j};
+            
+            missense_encoded{i}{j}=[nt2aa(temp_ref_codon,'AlternativeStartCodons','false')...
+                num2str(temp_residue) nt2aa(temp_alt_codon,'AlternativeStartCodons','false')];
+
+        else
+
+            missense_encoded{i}{j}='*';
+
+        end
         
     end
     
