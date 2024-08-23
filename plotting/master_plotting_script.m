@@ -3,7 +3,13 @@ clear
 
 tic
 
-%filebase='/Users/cjakobson/';
+
+set(0,'DefaultLineLineWidth',1)
+set(0,'DefaultFigureColor','w')
+set(0,'DefaultAxesFontSize',12)
+set(0,'DefaultAxesLineWidth',1)
+
+
 filebase='/Users/cjakobson/';
 %filebase='/Users/christopherjakobson/';
 
@@ -16,15 +22,149 @@ output_directory=[filebase 'Dropbox/JaroszLab/pop-gen-structure-output/'];
 
 addpath([code_directory 'data-prep'])
 addpath([code_directory 'plotting'])
+addpath([code_directory 'plotting/plot'])
 
-set(0,'DefaultLineLineWidth',1)
-set(0,'DefaultFigureColor','w')
-set(0,'DefaultAxesFontSize',12)
-set(0,'DefaultAxesLineWidth',1)
 
-blue=[43 172 226]./256;
-orange=[248 149 33]./256;
-grey=[128 128 128]./256;
+
+
+%Figure 1
+figure('units','normalized','outerposition',[0 0 1 1])
+
+
+%ASA and neighbors for simulated mutations
+subplot(2,4,1)
+plot_asa_sim(dependency_directory)
+
+subplot(2,4,2)
+plot_neighbor_sim(dependency_directory)
+
+
+
+%plot relative to 1K
+subplot(2,4,3)
+plot_asa_sim_1K(dependency_directory)
+
+
+subplot(2,4,4)
+plot_neighbor_sim_1K(dependency_directory)
+
+
+
+%break down by secondary structure and AA
+subplot(2,4,5)
+plot_asa_sim_1K_structure(dependency_directory)
+
+subplot(2,4,6)
+plot_neighbor_sim_1K_structure(dependency_directory)
+
+
+
+subplot(2,4,7)
+plot_asa_sim_1K_residue(dependency_directory)
+
+subplot(2,4,8)
+plot_neighbor_sim_1K_residue(dependency_directory)
+
+
+
+
+
+
+
+
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'Figure_1_1'],'-dsvg','-r0')
+print([output_directory 'Figure_1_1'],'-djpeg','-r300')
+
+
+
+%Figure S1
+
+
+%Ts/Tv
+
+
+%raw bar charts by structure and residue
+
+
+
+
+%Figure 2
+%gene-level analysis
+figure('units','normalized','outerposition',[0 0 1 1])
+
+
+%gene-level strength of selection is correlated across metrics
+subplot(2,4,1)
+scatter_asa_neighbor_gene(dependency_directory)
+
+
+subplot(2,4,2)
+scatter_asa_dN_gene(dependency_directory)
+
+
+subplot(2,4,3)
+scatter_neighbor_dN_gene(dependency_directory)
+
+
+
+%split genes into young/ancient
+subplot(2,4,5)
+plot_asa_sim_1K_structure_age(dependency_directory)
+
+subplot(2,4,6)
+plot_neighbor_sim_1K_structure_age(dependency_directory)
+
+subplot(2,4,7)
+plot_dN_sim_1K_structure_age(dependency_directory)
+
+
+
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'Figure_2_1'],'-dsvg','-r0')
+print([output_directory 'Figure_2_1'],'-djpeg','-r300')
+
+
+
+figure('units','normalized','outerposition',[0 0 1 1])
+
+%2-D plots by AA/struct
+subplot(2,8,1)
+plot_asa_sim_1K_2D(dependency_directory)
+
+subplot(2,8,2)
+plot_neighbor_sim_1K_2D(dependency_directory)
+
+
+%metrics by within domain/not
+subplot(2,4,2)
+plot_asa_sim_1K_superfam(dependency_directory)
+
+subplot(2,4,3)
+plot_neighbor_sim_1K_superfam(dependency_directory)
+
+
+%repeat 2D analysis this way
+
+
+
+
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'Figure_2_2'],'-dsvg','-r0')
+print([output_directory 'Figure_2_2'],'-djpeg','-r300')
+
+
+
+
+
+
+
+
+
+
+
+jtnbarve
+
 
 load([dependency_directory 'asa_data.mat'])
 load([dependency_directory 'neighbor_data.mat'])
