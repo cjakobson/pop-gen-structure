@@ -66,7 +66,7 @@ to_plot2=mean(gene_structure_neighbor_mat(young_idx,:),'omitnan');
 
 hold on
 bar([to_plot1; to_plot2]','BaseValue',1)
-ylim([0.8 1.2])
+ylim([0.85 1.15])
 title('C_\alpha within 10 Ang.')
 xticks(1:length(structure_labels))
 xtickangle(45)

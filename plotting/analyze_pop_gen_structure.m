@@ -3,7 +3,6 @@ clear
 
 tic
 
-%filebase='/Users/cjakobson/';
 filebase='/Users/cjakobson/';
 %filebase='/Users/christopherjakobson/';
 

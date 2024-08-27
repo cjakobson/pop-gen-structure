@@ -145,8 +145,9 @@ plot_neighbor_sim_1K_superfam(dependency_directory)
 
 
 %repeat 2D analysis this way
+plot_asa_sim_1K_2D_superfam(8,dependency_directory)
 
-
+plot_neighbor_sim_1K_2D_superfam(10,dependency_directory)
 
 
 set(gcf,'PaperPositionMode','auto')
@@ -155,9 +156,47 @@ print([output_directory 'Figure_2_2'],'-djpeg','-r300')
 
 
 
+%Figure 3
+%rare/common in 1K
+figure('units','normalized','outerposition',[0 0 1 1])
+
+
+subplot(2,4,1)
+plot_asa_rare_common(dependency_directory)
+
+subplot(2,4,2)
+plot_neighbor_rare_common(dependency_directory)
+
+
+subplot(2,4,3)
+plot_asa_rare_common_structure(dependency_directory)
+
+
+subplot(2,4,4)
+plot_neighbor_rare_common_structure(dependency_directory)
+
+
+subplot(2,4,5)
+plot_asa_rare_common_residue(dependency_directory)
+
+
+subplot(2,4,6)
+plot_neighbor_rare_common_residue(dependency_directory)
+
+
+%slide af_thresh
+subplot(2,4,7)
+plot_asa_rare_common_af(dependency_directory)
+
+
+subplot(2,4,8)
+plot_neighbor_rare_common_af(dependency_directory)
 
 
 
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'Figure_3_1'],'-dsvg','-r0')
+print([output_directory 'Figure_3_1'],'-djpeg','-r300')
 
 
 
