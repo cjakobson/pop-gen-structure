@@ -46,13 +46,17 @@ end
 
 base_array={'A','C','T','G'};
 
-read_thresh=30;%100;
+read_thresh=40;%100;
+fraction_thresh=0.33;
+
 missense_position=cell(length(to_read),1);
 ref_base=missense_position;
 alt_base=missense_position;
 missense_encoded=missense_position;
 indel_position=missense_position;
 indel_base=missense_position;
+
+all_fraction=[];
 for i=1:length(to_read)
     
     input_table=readtable([dependency_directory 'FPR1_results/K2P4DZ_per_base_data/' to_read(sort_idx2(i)).name]);
@@ -60,8 +64,14 @@ for i=1:length(to_read)
     input_table=input_table(33:end,:);
     
     v_mismatch=table2array(input_table(:,5));
+    v_counts=table2array(input_table(:,3));
+
+    v_fraction=v_mismatch./v_counts;
+
+    all_fraction=[all_fraction;v_fraction];
     
-    temp_idx=find(v_mismatch>read_thresh);
+    %temp_idx=find(v_mismatch>read_thresh);
+    temp_idx=find(v_fraction*12>=fraction_thresh);
     
     
     for j=1:length(temp_idx)
@@ -71,6 +81,7 @@ for i=1:length(to_read)
         missense_position{i}(j)=temp_idx(j);
         ref_base{i}{j}=base_array{sort_idx(1)};
         alt_base{i}{j}=base_array{sort_idx(2)};
+        missense_fraction{i}(j)=v_fraction(temp_idx(j));
         
     end
     
@@ -203,6 +214,11 @@ end
 
 missense_position=missense_position(pools_to_use);
 missense_encoded=missense_encoded(pools_to_use);
+missense_fraction=missense_fraction(pools_to_use);
+
+indel_position=indel_position(pools_to_use);
+indel_pos_fpr1=indel_pos_fpr1(pools_to_use);
+
 v_direction=v_direction(pools_to_use);
 
 %output table by pool
@@ -224,7 +240,8 @@ for i=1:length(pools_to_use)
     v_temp=[];
     for j=1:length(missense_encoded{i})
 
-        v_temp=[v_temp missense_encoded{i}{sort_idx(j)} ' '];
+        v_temp=[v_temp missense_encoded{i}{sort_idx(j)} '_'...
+            num2str(12*missense_fraction{i}(sort_idx(j))) ' '];
 
     end
 
@@ -251,6 +268,8 @@ writetable(to_output,[dependency_directory 'FPR1_primordium_SNPs.txt'])
 all_missense_identified=sort(all_missense_identified);
 unique_missense_identified=unique(all_missense_identified);
 
+
+sum(cellfun(@length,missense_encoded))
 
 
 
