@@ -19,6 +19,7 @@ title('all residues in proteome')
 ylabel('number of residues')
 xlabel('C_\alpha within 10 Ang.')
 set(gca,'YScale','log')
+ylim([1e3 1e6])
 
 end
 

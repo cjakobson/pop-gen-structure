@@ -80,13 +80,35 @@ print([output_directory 'Figure_1_1'],'-djpeg','-r300')
 
 %Figure S1
 
+%raw bar charts by structure and residue
+figure('units','normalized','outerposition',[0 0 1 1])
+
+subplot(2,4,1)
+plot_asa_sim_raw_structure(dependency_directory)
+
+
+subplot(2,4,2)
+plot_neighbor_sim_raw_structure(dependency_directory)
+
+
+subplot(2,4,3)
+plot_asa_sim_raw_residue(dependency_directory)
+
+subplot(2,4,4)
+plot_neighbor_sim_raw_residue(dependency_directory)
+
+
 
 %Ts/Tv
 
 
-%raw bar charts by structure and residue
 
 
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'Figure_S1_1'],'-dsvg','-r0')
+print([output_directory 'Figure_S1_1'],'-djpeg','-r300')
+
+jdystherge
 
 
 %Figure 2
@@ -201,8 +223,10 @@ print([output_directory 'Figure_3_1'],'-djpeg','-r300')
 
 
 
+kmynstbrve
 
-jtnbarve
+
+
 
 
 load([dependency_directory 'asa_data.mat'])
