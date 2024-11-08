@@ -29,6 +29,8 @@ legend({'rare','common'})
 ylabel('relative freq.')
 xlabel('C_\alpha within 10 Ang.')
 %set(gca,'YScale','log')
+[h p]=kstest2(v1,v2);
+text(40,0.1,['p = ' num2str(p)])
 
 end
 

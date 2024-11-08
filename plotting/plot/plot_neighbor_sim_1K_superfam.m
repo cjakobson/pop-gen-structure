@@ -28,6 +28,13 @@ xtickangle(45)
 xticklabels(temp_labels)
 ylabel('C_\alpha within 10 Ang. 1K/sim')
 ylim([0 35])
+for i=1:length(to_plot)
+    for j=(i+1):length(to_plot)
+        [h p]=ttest2(to_plot{i},to_plot{j});
+        text((i+j)/2,33,num2str(p))
+        plot([i j],[31 31],'-k')
+    end
+end
 
 end
 

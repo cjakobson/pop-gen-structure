@@ -34,8 +34,10 @@ for i=1:length(genes_to_use)
 
 end
 
-young_idx=gene_age==6;
-old_idx=gene_age==1;
+%young_idx=gene_age==6;
+young_idx=gene_age>=2;
+%old_idx=gene_age==1;
+old_idx=gene_age<=1;
 
 
 
@@ -57,14 +59,27 @@ for i=1:length(structure_labels)
     
 end
 
-to_plot1=mean(gene_structure_dN_mat(old_idx,:),'omitnan');
-to_plot2=mean(gene_structure_dN_mat(young_idx,:),'omitnan');
+for i=1:length(structure_labels)
+    
+    v1=gene_structure_dN_mat(old_idx,i);
+    v2=gene_structure_dN_mat(young_idx,i);
+
+    to_plot1(i)=mean(v1,'omitnan');
+    to_plot2(i)=mean(v2,'omitnan');
+    
+    [h,p_val(i)]=ttest2(v1,v2);
+    
+end
+
 
 
 
 
 hold on
 bar([to_plot1; to_plot2]','BaseValue',0)
+for i=1:length(p_val)
+    text(i,0.045,num2str(p_val(i)),'Rotation',45)
+end
 ylim([0 0.05])
 title('dN 1K/sim')
 xticks(1:length(structure_labels))

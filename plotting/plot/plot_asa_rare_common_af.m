@@ -35,9 +35,10 @@ for i=1:length(af_thresh)
             
             temp_idx3=structure_mat_1K==k;
             
-            ratio_mat{i}(j,k)=...
-                mean(mean(asa_mat_1K(logical(temp_idx1.*temp_idx2.*temp_idx3)),'omitnan'),'omitnan')/...
-                mean(mean(asa_mat_1K(logical(~temp_idx1.*temp_idx2.*temp_idx3)),'omitnan'),'omitnan');
+            v1=reshape(asa_mat_1K(logical(temp_idx1.*temp_idx2.*temp_idx3)),1,[]);
+            v2=reshape(asa_mat_1K(logical(~temp_idx1.*temp_idx2.*temp_idx3)),1,[]);
+            
+            ratio_mat{i}(j,k)=mean(v1,'omitnan')/mean(v2,'omitnan');
             
         end
         
@@ -45,9 +46,9 @@ for i=1:length(af_thresh)
 
     ratio_mat{i}(isinf(ratio_mat{i}))=nan;
     
-%     v_mean(i)=mean(mean(ratio_mat{i},'omitnan'),'omitnan');
-    v_sd(i)=std(std(ratio_mat{i},'omitnan'),'omitnan')/sqrt(sum(sum(~isnan(ratio_mat{i}))));
-    v_median(i)=median(median(ratio_mat{i},'omitnan'),'omitnan');
+    v_ratio=reshape(ratio_mat{i},1,[]);
+    v_sd(i)=std(v_ratio,'omitnan')/sqrt(sum(~isnan(v_ratio)));
+    v_median(i)=median(v_ratio,'omitnan');
 
 end
 

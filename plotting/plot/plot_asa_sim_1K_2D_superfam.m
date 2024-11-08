@@ -86,9 +86,10 @@ c = [r g b];
 colormap(c)
 colorbar
 
+to_plot_in_domain=to_plot;
 
 
-
+m=1;
 for i=1:length(aa_labels)
     
     temp_idx1=residue_mat_sim==i;
@@ -112,6 +113,9 @@ for i=1:length(aa_labels)
         to_plot(i,j)=mean(mean(temp_asa_mat_1K(temp_idx4),'omitnan'),'omitnan')/...
             mean(mean(temp_asa_mat_sim(temp_idx3),'omitnan'),'omitnan');
         
+        temp_labels{m}=[structure_labels{j} ' ' aa_labels{i}];
+        m=m+1;
+        
     end
     
 end
@@ -132,6 +136,23 @@ colormap(c)
 colorbar
 
 
+to_plot_outside_domain=to_plot;
+% 
+% 
+% %scatter within vs outside
+% v1=reshape(to_plot_outside_domain,1,[]);
+% v2=reshape(to_plot_in_domain,1,[]);
+% 
+% subplot(2,4,plot_offset/2+2)
+% scatter(v1,v2,10,'k','filled')
+% for i=1:length(temp_labels)
+%     if abs(v1(i)-v2(i))>0.2
+%         text(v1(i),v2(i),temp_labels{i})
+%     end
+% end
+% axis square
+% xlabel('outside domain')
+% ylabel('in domain')
 
 end
 

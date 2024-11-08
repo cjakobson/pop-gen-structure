@@ -29,6 +29,9 @@ legend({'rare','common'})
 ylabel('relative freq.')
 xlabel('ASA (Ang.^2)')
 %set(gca,'YScale','log')
+[h p]=kstest2(v1,v2);
+text(200,0.1,['p = ' num2str(p)])
+
 
 end
 

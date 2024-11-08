@@ -18,6 +18,7 @@ to_plot{2}=asa_mat_sim(domain_mat_sim==1);
 to_plot{4}=asa_mat_sim(domain_mat_sim==0);
 
 
+
 hold on
 easy_box(to_plot)
 axis square
@@ -28,6 +29,13 @@ xtickangle(45)
 xticklabels(temp_labels)
 ylabel('ASA (Ang.^2)')
 ylim([0 300])
+for i=1:length(to_plot)
+    for j=(i+1):length(to_plot)
+        [h p]=ttest2(to_plot{i},to_plot{j});
+        text((i+j)/2,275,num2str(p))
+        plot([i j],[250 250],'-k')
+    end
+end
 
 end
 

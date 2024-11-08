@@ -3,8 +3,8 @@ clear
 
 tic
 
-%filebase='/Users/cjakobson/';
-filebase='/Users/christopherjakobson/';
+filebase='/Users/cjakobson/';
+%filebase='/Users/christopherjakobson/';
 
 figure_counter=1;
 
@@ -13,6 +13,7 @@ dependency_directory=[filebase 'Dropbox/JaroszLab/pop-gen-structure-dependencies
 output_directory=[filebase 'Dropbox/JaroszLab/pop-gen-structure-output/'];
 addpath([code_directory 'data-prep'])
 addpath([code_directory 'plotting'])
+addpath([code_directory 'plotting/plot'])
 
 set(0,'DefaultLineLineWidth',1)
 set(0,'DefaultFigureColor','w')
@@ -26,7 +27,7 @@ grey=[128 128 128]./256;
 
 
 %dotplot of final adapted growth rates from pilot
-strains={'BY4741','BY4741Dmsh6','BY4743','BY4743DDmsh6'};
+strains={'BY4741','BY4741Dmsh6','BY4743'};%,'BY4743DDmsh6'};
 
 clear to_plot
 for i=1:length(strains)
@@ -63,14 +64,14 @@ for i=1:length(to_plot)
     n_to_plot(i)=sum(to_plot{i}>evo_thresh_spot_size);
     
 end
-subplot(2,4,2)
+subplot(2,8,3)
 hold on
 bar(n_to_plot)
 xticks(1:length(to_plot))
 xtickangle(45)
 xticklabels(strains)
 ylabel('number of adapted lineages')
-axis square
+%axis square
 
 
 %median normalize to non-adapted
@@ -101,14 +102,14 @@ for i=1:length(to_plot)
     n_to_plot(i)=sum(to_plot{i}>evo_thresh_spot_size_norm);
     
 end
-subplot(2,4,4)
+subplot(2,8,7)
 hold on
 bar(n_to_plot)
 xticks(1:length(to_plot))
 xtickangle(45)
 xticklabels(strains)
 ylabel('number of adapted lineages')
-axis square
+%axis square
 
 
 
@@ -172,7 +173,7 @@ for i=1:2%length(condition_names)
 
     end
 
-    for j=1:100%length(adapted_idx)
+    for j=101:200%length(adapted_idx)
 
         v1=1:n_time_points;
         v2=condition_slope_mat{i}(:,non_adapted_idx{i}(j));
@@ -248,20 +249,20 @@ for i=1:2%length(condition_names)
 
 end
 
-subplot(2,4,1)
+subplot(2,8,1)
 hold on
 easy_dotplot(to_plot)
 xticks(1:length(to_plot))
 xtickangle(45)
 xticklabels(condition_names(1:length(to_plot)))
 ylabel('final passage growth rate')
-axis square
+%axis square
 title('rapamycin evolution')
 ylim([0 2.5])
 
 
 
-subplot(2,4,2)
+subplot(2,8,2)
 hold on
 bar(n_adapted)
 ylim([0 100])
@@ -420,6 +421,7 @@ for i=1:length(plate_labels)
     xticklabels(temp_labels)
     ylabel('growth rate')
     ylim([0 2])
+    axis square
     for j=1:length(to_plot)
         text(j,0.1,num2str(length(to_plot{j})))
     end

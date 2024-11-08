@@ -14,8 +14,8 @@ blue=[43 172 226]./256;
 orange=[248 149 33]./256;
 grey=[128 128 128]./256;
 
-%filebase='/Users/cjakobson/';
-filebase='/Users/christopherjakobson/';
+filebase='/Users/cjakobson/';
+%filebase='/Users/christopherjakobson/';
 
 code_directory=[filebase 'Documents/GitHub/pop-gen-structure/'];
 dependency_directory=[filebase '/Dropbox/JaroszLab/pop-gen-structure-dependencies/'];
@@ -99,6 +99,8 @@ for i=1:length(to_read)
         
     end
     
+    
+    
 end
 
 
@@ -127,7 +129,7 @@ for i=1:length(missense_position)
     
     if strcmp(v_direction{i},'fwd')
         
-        v_offset1=216;%215;
+        v_offset1=215;%216;
         
         for j=1:length(missense_position{i})
             
@@ -149,7 +151,7 @@ for i=1:length(missense_position)
     
     if strcmp(v_direction{i},'rev')
         
-        v_offset2=235;%234;
+        v_offset2=234;%235;
         
         for j=1:length(missense_position{i})
             
@@ -273,7 +275,7 @@ sum(cellfun(@length,missense_encoded))
 
 
 
-bevdc
+
 
 
 
@@ -284,7 +286,7 @@ bevdc
 %calculate various structure statistics from alphafold calcs
 
 
-load('/Users/cjakobson/Dropbox/JaroszLab/211028_SegregantProteomicsData_V1/1002data/1002dataAnn.mat')
+load([filebase 'Dropbox/JaroszLab/211028_SegregantProteomicsData_V1/1002data/1002dataAnn.mat'])
 
 temp_idx=cellfun(@isempty,gene);
 
@@ -297,42 +299,116 @@ af(temp_idx)=[];
 
 orfToUse='YNL135C';
 
-load(['/Users/cjakobson/Dropbox/JaroszLab/211028_SegregantProteomicsData_V1/mutationSimulations/mutationOutput/' orfToUse 'neighborTable.mat'])
-neighborTable=outputTable;
+load([filebase 'Dropbox/JaroszLab/211028_SegregantProteomicsData_V1/mutationSimulations/mutationOutput/' orfToUse 'neighborTable.mat'])
+neighbor_table=outputTable;
 
-load(['/Users/cjakobson/Dropbox/JaroszLab/211028_SegregantProteomicsData_V1/mutationSimulations/mutationOutput/' orfToUse 'dsspTable.mat'])
-dsspTable=outputTable;
+load([filebase 'Dropbox/JaroszLab/211028_SegregantProteomicsData_V1/mutationSimulations/mutationOutput/' orfToUse 'dsspTable.mat'])
+dssp_table=outputTable;
 
-load(['/Users/cjakobson/Dropbox/JaroszLab/211028_SegregantProteomicsData_V1/mutationSimulations/mutationOutput/' orfToUse 'mutationTable.mat'])
+load([filebase 'Dropbox/JaroszLab/211028_SegregantProteomicsData_V1/mutationSimulations/mutationOutput/' orfToUse 'mutationTable.mat'])
 
 
-simulatedResidue=outputTable.residueNumber(outputTable.isMis==1);
+simulated_sesidue=outputTable.residueNumber(outputTable.isMis==1);
 
-geneIdx=ismember(gene,orfToUse);
-typeIdx=ismember(type,'missense_variant');
+gene_idx=ismember(gene,orfToUse);
+type_idx=ismember(type,'missense_variant');
 
-observedMutations=proteinEncoded(logical(geneIdx.*typeIdx));
+observed_mutations=proteinEncoded(logical(gene_idx.*type_idx));
 
 clear chr dnaEncoded gene pos proteinEncoded type
 
-for i=1:length(observedMutations)
+for i=1:length(observed_mutations)
     
-    observedResidue(i)=str2num(observedMutations{i}(6:(end-3)));
-    
-end
-
-
-for i=1:max(simulatedResidue)
-    
-    tempSim=sum(simulatedResidue==i);
-    tempObs=sum(observedResidue==i);
-    
-    vRatio(i)=tempObs/tempSim;
+    observed_residue(i)=str2num(observed_mutations{i}(6:(end-3)));
     
 end
 
 
+for i=1:max(simulated_sesidue)
+    
+    temp_sim=sum(simulated_sesidue==i);
+    temp_obs=sum(observed_residue==i);
+    
+    v_ratio(i)=temp_obs/temp_sim;
+    
+end
 
+
+%merge missense variant positions
+all_no_rad=[];
+for i=1:length(missense_encoded)
+    
+    v_temp=missense_encoded{i};
+    
+    for j=1:length(v_temp)
+        
+        if ~strcmp(v_temp{j}(end),'*')
+            
+            all_no_rad=[all_no_rad str2num(v_temp{j}(2:(end-1)))];
+            
+        end
+        
+    end
+    
+end
+
+
+
+figure('units','normalized','outerposition',[0 0 1 1])
+
+
+subplot(2,8,1)
+hold on
+
+clear toPlot
+to_plot{1}=dssp_table.sasa(all_no_rad);
+to_plot{2}=dssp_table.sasa;
+
+easy_box(to_plot)
+ylim([0 200])
+title('SASA')
+tempLabels={'resistant no rad','all'};
+xticks(1:length(tempLabels))
+xtickangle(45)
+xticklabels(tempLabels)
+m=1;
+for i=1:length(to_plot)
+    for j=(i+1):length(to_plot)
+        [h p]=ttest2(to_plot{i},to_plot{j});
+        text((i+j)/2,100+25*m,num2str(p))
+        m=m+1;
+    end
+end
+
+
+subplot(2,8,2)
+hold on
+
+clear toPlot
+to_plot{1}=neighbor_table.neighbors(all_no_rad);
+to_plot{2}=neighbor_table.neighbors;
+
+easy_box(to_plot)
+ylim([0 30])
+title('neighbors')
+tempLabels={'resistant no rad','all'};
+xticks(1:length(tempLabels))
+xtickangle(45)
+xticklabels(tempLabels)
+m=1;
+for i=1:length(to_plot)
+    for j=(i+1):length(to_plot)
+        [h p]=ttest2(to_plot{i},to_plot{j});
+        text((i+j)/2,25+1*m,num2str(p))
+        m=m+1;
+    end
+end
+
+
+
+
+
+dyjntsbrew
 
 
 %no rad
@@ -397,10 +473,10 @@ subplot(2,8,1)
 hold on
 
 clear toPlot
-toPlot{1}=dsspTable.sasa(allNoRad);
-toPlot{2}=dsspTable.sasa;
+to_plot{1}=dssp_table.sasa(allNoRad);
+to_plot{2}=dssp_table.sasa;
 
-easyBox(toPlot)
+easyBox(to_plot)
 ylim([0 200])
 title('SASA')
 tempLabels={'resistant no rad','all'};
@@ -408,9 +484,9 @@ xticks(1:length(tempLabels))
 xtickangle(45)
 xticklabels(tempLabels)
 m=1;
-for i=1:length(toPlot)
-    for j=(i+1):length(toPlot)
-        [h p]=ttest2(toPlot{i},toPlot{j});
+for i=1:length(to_plot)
+    for j=(i+1):length(to_plot)
+        [h p]=ttest2(to_plot{i},to_plot{j});
         text((i+j)/2,100+25*m,num2str(p))
         m=m+1;
     end
@@ -421,10 +497,10 @@ subplot(2,8,2)
 hold on
 
 clear toPlot
-toPlot{1}=neighborTable.neighbors(allNoRad);
-toPlot{2}=neighborTable.neighbors;
+to_plot{1}=neighbor_table.neighbors(allNoRad);
+to_plot{2}=neighbor_table.neighbors;
 
-easyBox(toPlot)
+easyBox(to_plot)
 ylim([0 30])
 title('neighbors')
 tempLabels={'resistant no rad','all'};
@@ -432,9 +508,9 @@ xticks(1:length(tempLabels))
 xtickangle(45)
 xticklabels(tempLabels)
 m=1;
-for i=1:length(toPlot)
-    for j=(i+1):length(toPlot)
-        [h p]=ttest2(toPlot{i},toPlot{j});
+for i=1:length(to_plot)
+    for j=(i+1):length(to_plot)
+        [h p]=ttest2(to_plot{i},to_plot{j});
         text((i+j)/2,25+1*m,num2str(p))
         m=m+1;
     end
@@ -448,11 +524,11 @@ subplot(2,8,9)
 hold on
 
 clear toPlot
-toPlot{1}=dsspTable.sasa(allNoRad);
-toPlot{2}=dsspTable.sasa(allRad);
-toPlot{3}=dsspTable.sasa;
+to_plot{1}=dssp_table.sasa(allNoRad);
+to_plot{2}=dssp_table.sasa(allRad);
+to_plot{3}=dssp_table.sasa;
 
-easyBox(toPlot)
+easyBox(to_plot)
 ylim([0 200])
 title('SASA')
 tempLabels={'resistant no rad','resistant rad','all'};
@@ -460,9 +536,9 @@ xticks(1:length(tempLabels))
 xtickangle(45)
 xticklabels(tempLabels)
 m=1;
-for i=1:length(toPlot)
-    for j=(i+1):length(toPlot)
-        [h p]=ttest2(toPlot{i},toPlot{j});
+for i=1:length(to_plot)
+    for j=(i+1):length(to_plot)
+        [h p]=ttest2(to_plot{i},to_plot{j});
         text((i+j)/2,100+25*m,num2str(p))
         m=m+1;
     end
@@ -475,11 +551,11 @@ subplot(2,8,10)
 hold on
 
 clear toPlot
-toPlot{1}=neighborTable.neighbors(allNoRad);
-toPlot{2}=neighborTable.neighbors(allRad);
-toPlot{3}=neighborTable.neighbors;
+to_plot{1}=neighbor_table.neighbors(allNoRad);
+to_plot{2}=neighbor_table.neighbors(allRad);
+to_plot{3}=neighbor_table.neighbors;
 
-easyBox(toPlot)
+easyBox(to_plot)
 ylim([0 30])
 title('neighbors')
 tempLabels={'resistant no rad','resistant rad','all'};
@@ -487,9 +563,9 @@ xticks(1:length(tempLabels))
 xtickangle(45)
 xticklabels(tempLabels)
 m=1;
-for i=1:length(toPlot)
-    for j=(i+1):length(toPlot)
-        [h p]=ttest2(toPlot{i},toPlot{j});
+for i=1:length(to_plot)
+    for j=(i+1):length(to_plot)
+        [h p]=ttest2(to_plot{i},to_plot{j});
         text((i+j)/2,25+1*m,num2str(p))
         m=m+1;
     end

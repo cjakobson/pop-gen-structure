@@ -24,8 +24,12 @@ for i=1:length(aa_labels)
 
     temp_idx2=residue_mat_1K==i;
     
-    to_plot(i)=mean(mean(neighbor_mat_1K(logical(temp_idx1.*temp_idx2)),'omitnan'),'omitnan')/...
-        mean(mean(neighbor_mat_1K(logical(~temp_idx1.*temp_idx2)),'omitnan'),'omitnan');
+    v1=reshape(neighbor_mat_1K(logical(temp_idx1.*temp_idx2)),1,[]);
+    v2=reshape(neighbor_mat_1K(logical(~temp_idx1.*temp_idx2)),1,[]);
+    
+    to_plot(i)=mean(v1,'omitnan')/mean(v2,'omitnan');
+
+    [h p_val(i)]=ttest2(v1,v2);
 
     
 end
@@ -34,6 +38,9 @@ end
 
 hold on
 bar(to_plot,'BaseValue',1)
+for i=1:length(p_val)
+    text(i,0.98,num2str(p_val(i)),'Rotation',-45)
+end
 ylim([0.85 1.15])
 title('C_\alpha within 10 Ang.')
 xticks(1:length(aa_labels))

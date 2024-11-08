@@ -1,4 +1,4 @@
-function [] = scatter_asa_neighbor_gene(dependency_directory)
+function [] = scatter_asa_neighbor_gene(dependency_directory,output_directory)
 
 blue=[43 172 226]./256;
 orange=[248 149 33]./256;
@@ -13,6 +13,13 @@ load([dependency_directory 'neighbor_mat_1K.mat'])
 
 load([dependency_directory 'protein_length.mat'])
 load([dependency_directory 'gene_names.mat'])
+
+%filter on genes with too few 1K variants
+cov_thresh=50;
+low_coverage_idx=sum(~isnan(asa_mat_1K),2)<cov_thresh;
+
+asa_mat_1K(low_coverage_idx,:)=nan;
+neighbor_mat_1K(low_coverage_idx,:)=nan;
 
 for i=1:length(genes_to_use)
     
@@ -55,6 +62,24 @@ text(1.5,1.1,num2str(p))
 % ylabel('1K normalized to simulated')
 % axis square
 
+
+%output ranked list for gorilla [use ratio]
+v_to_sort=v2./v1;
+genes_filtered=genes_to_use;
+genes_filtered(isnan(v1))={'NA'};
+genes_filtered(isnan(v2))={'NA'};
+[v_sorted,sort_idx]=sort(v_to_sort,'ascend');
+
+to_output=table(genes_filtered(sort_idx));
+writetable(to_output,[output_directory 'genes_descending_selection.txt'])
+
+
+
+v_to_sort=v2./v1;
+[v_sorted,sort_idx]=sort(v_to_sort,'descend');
+
+to_output=table(genes_filtered(sort_idx));
+writetable(to_output,[output_directory 'genes_ascending_selection.txt'])
 
 end
 

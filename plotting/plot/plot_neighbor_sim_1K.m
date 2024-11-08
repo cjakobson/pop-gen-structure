@@ -22,6 +22,8 @@ legend({'simulated SNPs','1K SNPs'})
 %title('simulated SNPs')
 ylabel('number of residues')
 xlabel('C_\alpha within 10 Ang.')
+[h p]=kstest2(v1,v2);
+text(40,0.1,['p = ' num2str(p)])
 %set(gca,'YScale','log')
 
 end

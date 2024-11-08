@@ -11,6 +11,12 @@ load([dependency_directory 'neighbor_mat_1K.mat'])
 load([dependency_directory 'structure_mat_sim.mat'])
 load([dependency_directory 'structure_mat_1K.mat'])
 
+%filter on genes with too few 1K variants
+cov_thresh=50;
+low_coverage_idx=sum(~isnan(neighbor_mat_1K),2)<cov_thresh;
+
+neighbor_mat_1K(low_coverage_idx,:)=nan;
+
 structure_labels={'alphahelix','310helix','pihelix','betasheet','betaladder',...
      'bend','turn','unstr.'};
  
@@ -34,8 +40,10 @@ for i=1:length(genes_to_use)
 
 end
 
-young_idx=gene_age==6;
-old_idx=gene_age==1;
+%young_idx=gene_age==6;
+young_idx=gene_age>=2;
+%old_idx=gene_age==1;
+old_idx=gene_age<=1;
 
 
 
@@ -58,14 +66,25 @@ for i=1:length(structure_labels)
     
 end
 
-to_plot1=mean(gene_structure_neighbor_mat(old_idx,:),'omitnan');
-to_plot2=mean(gene_structure_neighbor_mat(young_idx,:),'omitnan');
 
+for i=1:length(structure_labels)
+    
+    v1=gene_structure_neighbor_mat(old_idx,i);
+    v2=gene_structure_neighbor_mat(young_idx,i);
 
+    to_plot1(i)=mean(v1,'omitnan');
+    to_plot2(i)=mean(v2,'omitnan');
+    
+    [h,p_val(i)]=ttest2(v1,v2);
+    
+end
 
 
 hold on
 bar([to_plot1; to_plot2]','BaseValue',1)
+for i=1:length(p_val)
+    text(i,1.1,num2str(p_val(i)),'Rotation',45)
+end
 ylim([0.85 1.15])
 title('C_\alpha within 10 Ang.')
 xticks(1:length(structure_labels))

@@ -108,7 +108,7 @@ set(gcf,'PaperPositionMode','auto')
 print([output_directory 'Figure_S1_1'],'-dsvg','-r0')
 print([output_directory 'Figure_S1_1'],'-djpeg','-r300')
 
-jdystherge
+
 
 
 %Figure 2
@@ -118,7 +118,7 @@ figure('units','normalized','outerposition',[0 0 1 1])
 
 %gene-level strength of selection is correlated across metrics
 subplot(2,4,1)
-scatter_asa_neighbor_gene(dependency_directory)
+scatter_asa_neighbor_gene(dependency_directory,output_directory)
 
 
 subplot(2,4,2)
@@ -130,21 +130,44 @@ scatter_neighbor_dN_gene(dependency_directory)
 
 
 
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'Figure_2_1'],'-dsvg','-r0')
+print([output_directory 'Figure_2_1'],'-djpeg','-r300')
+
+
+
+
+figure('units','normalized','outerposition',[0 0 1 1])
+
 %split genes into young/ancient
-subplot(2,4,5)
+subplot(2,4,1)
 plot_asa_sim_1K_structure_age(dependency_directory)
 
-subplot(2,4,6)
+subplot(2,4,2)
 plot_neighbor_sim_1K_structure_age(dependency_directory)
 
-subplot(2,4,7)
+subplot(2,4,3)
 plot_dN_sim_1K_structure_age(dependency_directory)
 
 
 
+%also by residue
+subplot(2,4,5)
+plot_asa_sim_1K_residue_age(dependency_directory)
+
+subplot(2,4,6)
+plot_neighbor_sim_1K_residue_age(dependency_directory)
+
+subplot(2,4,7)
+plot_dN_sim_1K_residue_age(dependency_directory)
+
+
+
+
 set(gcf,'PaperPositionMode','auto')
-print([output_directory 'Figure_2_1'],'-dsvg','-r0')
-print([output_directory 'Figure_2_1'],'-djpeg','-r300')
+print([output_directory 'Figure_2_2'],'-dsvg','-r0')
+print([output_directory 'Figure_2_2'],'-djpeg','-r300')
+
 
 
 
@@ -158,12 +181,23 @@ subplot(2,8,2)
 plot_neighbor_sim_1K_2D(dependency_directory)
 
 
-%metrics by within domain/not
+
+
+%scatter by combo
 subplot(2,4,2)
+scatter_asa_neighbor_sim_1K_2D(dependency_directory)
+
+
+
+%metrics by within domain/not
+subplot(2,4,3)
 plot_asa_sim_1K_superfam(dependency_directory)
 
-subplot(2,4,3)
+subplot(2,4,4)
 plot_neighbor_sim_1K_superfam(dependency_directory)
+
+
+
 
 
 %repeat 2D analysis this way
@@ -172,9 +206,18 @@ plot_asa_sim_1K_2D_superfam(8,dependency_directory)
 plot_neighbor_sim_1K_2D_superfam(10,dependency_directory)
 
 
+
+
+scatter_asa_neighbor_sim_1K_2D_superfam(6,dependency_directory)
+
+
+
+
 set(gcf,'PaperPositionMode','auto')
-print([output_directory 'Figure_2_2'],'-dsvg','-r0')
-print([output_directory 'Figure_2_2'],'-djpeg','-r300')
+print([output_directory 'Figure_2_3'],'-dsvg','-r0')
+print([output_directory 'Figure_2_3'],'-djpeg','-r300')
+
+
 
 
 

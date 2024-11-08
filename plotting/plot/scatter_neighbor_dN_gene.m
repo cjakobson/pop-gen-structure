@@ -14,6 +14,14 @@ load([dependency_directory 'neighbor_mat_1K.mat'])
 load([dependency_directory 'protein_length.mat'])
 load([dependency_directory 'gene_names.mat'])
 
+
+%filter on genes with too few 1K variants
+cov_thresh=50;
+low_coverage_idx=sum(~isnan(asa_mat_1K),2)<cov_thresh;
+
+asa_mat_1K(low_coverage_idx,:)=nan;
+neighbor_mat_1K(low_coverage_idx,:)=nan;
+
 for i=1:length(genes_to_use)
     
     temp_asa_sim=asa_mat_sim(i,:);
