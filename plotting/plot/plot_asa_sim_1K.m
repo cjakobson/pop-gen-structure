@@ -16,7 +16,9 @@ v2=v2(~isnan(v2));
 
 hold on
 histogram(v1,0:10:250,'Normalization','probability')
+text(150,0.16,['sim n = ' num2str(length(v1))])
 histogram(v2,0:10:250,'Normalization','probability')
+text(150,0.15,['1K n = ' num2str(length(v2))])
 axis square
 legend({'simulated SNPs','1K SNPs'})
 %title('simulated SNPs')
