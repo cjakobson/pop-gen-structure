@@ -120,6 +120,18 @@ subplot(2,4,3)
 scatter_neighbor_dN_gene(dependency_directory)
 
 
+%split genes into young/ancient
+subplot(2,4,5)
+plot_asa_sim_1K_structure_age(dependency_directory)
+
+subplot(2,4,6)
+plot_neighbor_sim_1K_structure_age(dependency_directory)
+
+subplot(2,4,7)
+plot_dN_sim_1K_structure_age(dependency_directory)
+
+
+
 
 set(gcf,'PaperPositionMode','auto')
 print([output_directory 'Figure_2_1'],'-dsvg','-r0')
@@ -127,40 +139,6 @@ print([output_directory 'Figure_2_1'],'-djpeg','-r300')
 
 
 
-
-figure('units','normalized','outerposition',[0 0 1 1])
-
-%split genes into young/ancient
-subplot(2,4,1)
-plot_asa_sim_1K_structure_age(dependency_directory)
-
-subplot(2,4,2)
-plot_neighbor_sim_1K_structure_age(dependency_directory)
-
-subplot(2,4,3)
-plot_dN_sim_1K_structure_age(dependency_directory)
-
-
-
-%also by residue
-subplot(2,4,5)
-plot_asa_sim_1K_residue_age(dependency_directory)
-
-subplot(2,4,6)
-plot_neighbor_sim_1K_residue_age(dependency_directory)
-
-subplot(2,4,7)
-plot_dN_sim_1K_residue_age(dependency_directory)
-
-
-
-
-set(gcf,'PaperPositionMode','auto')
-print([output_directory 'Figure_2_2'],'-dsvg','-r0')
-print([output_directory 'Figure_2_2'],'-djpeg','-r300')
-
-
-heawvrawc
 
 
 figure('units','normalized','outerposition',[0 0 1 1])
@@ -206,11 +184,32 @@ scatter_asa_neighbor_sim_1K_2D_superfam(6,dependency_directory)
 
 
 set(gcf,'PaperPositionMode','auto')
-print([output_directory 'Figure_2_3'],'-dsvg','-r0')
-print([output_directory 'Figure_2_3'],'-djpeg','-r300')
+print([output_directory 'Figure_2_2'],'-dsvg','-r0')
+print([output_directory 'Figure_2_2'],'-djpeg','-r300')
+
+
+%Figure S2
+figure('units','normalized','outerposition',[0 0 1 1])
 
 
 
+%also by residue
+subplot(2,4,1)
+plot_asa_sim_1K_residue_age(dependency_directory)
+
+subplot(2,4,2)
+plot_neighbor_sim_1K_residue_age(dependency_directory)
+
+subplot(2,4,3)
+plot_dN_sim_1K_residue_age(dependency_directory)
+
+
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'Figure_S2_1'],'-dsvg','-r0')
+print([output_directory 'Figure_S2_1'],'-djpeg','-r300')
+
+
+heawvrawc
 
 
 %Figure 3

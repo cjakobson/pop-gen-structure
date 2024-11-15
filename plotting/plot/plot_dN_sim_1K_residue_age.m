@@ -83,6 +83,7 @@ for i=1:length(p_val)
     text(i,0.045,num2str(p_val(i)),'Rotation',45)
 end
 ylim([0 0.06])
+xlim([0.5 length(to_plot1)+0.5])
 title('dN 1K/sim')
 xticks(1:length(aa_labels))
 xtickangle(45)

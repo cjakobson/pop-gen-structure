@@ -33,8 +33,8 @@ if exist(fileToGet)
             if length(temp_str)>=25
                 
                 sasa(j)=str2num(temp_str(23:25));
-                phi(j)=str2num(temp_str(92:96));
-                psi(j)=str2num(temp_str(98:102));
+                phi(j)=str2num(temp_str(91:96));
+                psi(j)=str2num(temp_str(97:102));
                 
             end
             

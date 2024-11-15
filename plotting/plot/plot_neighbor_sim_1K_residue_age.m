@@ -88,6 +88,7 @@ for i=1:length(p_val)
     text(i,1.1,num2str(p_val(i)),'Rotation',45)
 end
 ylim([0.8 1.15])
+xlim([0.5 length(to_plot1)+0.5])
 title('C_\alpha within 10 Ang.')
 xticks(1:length(aa_labels))
 xtickangle(45)

@@ -92,6 +92,7 @@ for i=1:length(p_val)
     text(i,0.9,num2str(p_val(i)),'Rotation',-45)
 end
 ylim([0.8 1.6])
+xlim([0.5 length(to_plot1)+0.5])
 title('ASA (Ang.^2) 1K/sim')
 xticks(1:length(aa_labels))
 xtickangle(45)

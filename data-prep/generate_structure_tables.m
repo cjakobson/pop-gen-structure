@@ -21,6 +21,9 @@ load([dependency_directory 'residue_data.mat'])
 load([dependency_directory 'secondary_structure_data.mat'])
 load([dependency_directory 'superfam_domain_boundaries.mat'])
 
+load([dependency_directory 'phi_data.mat'])
+load([dependency_directory 'psi_data.mat'])
+
 %make compatible with ismember
 residue_mat(cellfun(@isempty,residue_mat))={'NA'};
 secondary_mat(cellfun(@isempty,secondary_mat))={'NA'};
@@ -41,6 +44,9 @@ structure_mat_1K=nan(size(af_mat_1K));
 domain_mat_1K=nan(size(af_mat_1K));
 ts_mat_1K=nan(size(af_mat_1K));
 
+phi_mat_1K=nan(size(af_mat_1K));
+psi_mat_1K=nan(size(af_mat_1K));
+
 
 
 asa_mat_sim=nan(size(mutation_mat_simulated));
@@ -49,6 +55,9 @@ residue_mat_sim=nan(size(mutation_mat_simulated));
 structure_mat_sim=nan(size(mutation_mat_simulated));
 domain_mat_sim=nan(size(mutation_mat_simulated));
 ts_mat_sim=nan(size(mutation_mat_simulated));
+
+phi_mat_sim=nan(size(mutation_mat_simulated));
+psi_mat_sim=nan(size(mutation_mat_simulated));
 
 
 [n_proteins,max_residues]=size(asa_mat);
@@ -67,6 +76,10 @@ for i=1:length(genes_to_use)
     protein_length(i)=sum(cols_to_use);
     
     temp_asa=asa_mat(i,cols_to_use);
+    
+    temp_phi=phi_mat(i,cols_to_use);
+    temp_psi=psi_mat(i,cols_to_use);
+    
     temp_neighbor=neighbor_mat(i,cols_to_use);
     [~,temp_residue]=residue_types(residue_mat(i,cols_to_use));
     [~,temp_secondary]=structure_types(secondary_mat(i,cols_to_use));
@@ -106,6 +119,14 @@ for i=1:length(genes_to_use)
     v_ts_sim=logical(ts_mat_simulated(i,pos_sim));
     ts_mat_sim(i,1:length(v_ts_sim))=v_ts_sim;
     
+    
+    
+    phi_mat_1K(i,1:length(pos_1K))=temp_phi(pos_1K);
+    phi_mat_sim(i,1:length(pos_sim))=temp_phi(pos_sim);
+    
+    psi_mat_1K(i,1:length(pos_1K))=temp_psi(pos_1K);
+    psi_mat_sim(i,1:length(pos_sim))=temp_psi(pos_sim);
+    
 end
 
 
@@ -119,12 +140,20 @@ save([dependency_directory 'structure_mat_1K.mat'],'structure_mat_1K')
 save([dependency_directory 'domain_mat_1K.mat'],'domain_mat_1K')
 save([dependency_directory 'ts_mat_1K.mat'],'ts_mat_1K')
 
+save([dependency_directory 'phi_mat_1K.mat'],'phi_mat_1K')
+save([dependency_directory 'psi_mat_1K.mat'],'psi_mat_1K')
+
+
 save([dependency_directory 'asa_mat_sim.mat'],'asa_mat_sim')
 save([dependency_directory 'neighbor_mat_sim.mat'],'neighbor_mat_sim')
 save([dependency_directory 'residue_mat_sim.mat'],'residue_mat_sim')
 save([dependency_directory 'structure_mat_sim.mat'],'structure_mat_sim')
 save([dependency_directory 'domain_mat_sim.mat'],'domain_mat_sim')
 save([dependency_directory 'ts_mat_sim.mat'],'ts_mat_sim')
+
+save([dependency_directory 'phi_mat_sim.mat'],'phi_mat_sim')
+save([dependency_directory 'psi_mat_sim.mat'],'psi_mat_sim')
+
 
 save([dependency_directory 'protein_length.mat'],'protein_length')
 save([dependency_directory 'gene_names.mat'],'genes_to_use')

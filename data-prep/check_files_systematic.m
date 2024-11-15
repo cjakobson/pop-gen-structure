@@ -124,6 +124,10 @@ neighbor_mat=nan(length(genes_to_use),longest_seq);
 secondary_mat=cell(length(genes_to_use),longest_seq);
 residue_mat=cell(length(genes_to_use),longest_seq);
 
+%also get phi and psi angles
+phi_mat=nan(length(genes_to_use),longest_seq);
+psi_mat=nan(length(genes_to_use),longest_seq);
+
 
 tic
 
@@ -151,8 +155,10 @@ for i=1:length(genes_to_use)
 
         residue_mat(i,1:height(output_table))=output_table.residue;
         
+        phi_mat(i,1:height(output_table))=output_table.phi;
+        psi_mat(i,1:height(output_table))=output_table.psi;
+        
     end
-    
             
 end
 
@@ -163,6 +169,10 @@ save([dependency_directory 'asa_data.mat'],'asa_mat','genes_to_use')
 save([dependency_directory 'neighbor_data.mat'],'neighbor_mat','genes_to_use')
 save([dependency_directory 'secondary_structure_data.mat'],'secondary_mat','genes_to_use')
 save([dependency_directory 'residue_data.mat'],'residue_mat','genes_to_use')
+
+save([dependency_directory 'phi_data.mat'],'phi_mat','genes_to_use')
+save([dependency_directory 'psi_data.mat'],'psi_mat','genes_to_use')
+
 
 
 
