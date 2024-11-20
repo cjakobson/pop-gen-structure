@@ -20,7 +20,7 @@ to_plot{4}=neighbor_mat_sim(domain_mat_sim==0);
 
 hold on
 easy_box(to_plot)
-axis square
+%axis square
 temp_labels={'1K in domain','sim in domain',...
     '1K outside domain','sim outside domain'};
 xticks(1:length(temp_labels))

@@ -10,8 +10,8 @@ set(0,'DefaultAxesFontSize',12)
 set(0,'DefaultAxesLineWidth',1)
 
 
-filebase='/Users/cjakobson/';
-%filebase='/Users/christopherjakobson/';
+%filebase='/Users/cjakobson/';
+filebase='/Users/christopherjakobson/';
 
 figure_counter=1;
 
@@ -120,6 +120,11 @@ subplot(2,4,3)
 scatter_neighbor_dN_gene(dependency_directory)
 
 
+%GO-term analysis -- highlight metabolic process genes on A? boxplot of
+%split by GO term?
+
+
+
 %split genes into young/ancient
 subplot(2,4,5)
 plot_asa_sim_1K_structure_age(dependency_directory)
@@ -144,48 +149,57 @@ print([output_directory 'Figure_2_1'],'-djpeg','-r300')
 figure('units','normalized','outerposition',[0 0 1 1])
 
 %2-D plots by AA/struct
-subplot(2,8,1)
-plot_asa_sim_1K_2D(dependency_directory)
+%subplot(2,8,1)
+%plot_asa_sim_1K_2D(dependency_directory)
 
-subplot(2,8,2)
-plot_neighbor_sim_1K_2D(dependency_directory)
+%subplot(2,8,2)
+%plot_neighbor_sim_1K_2D(dependency_directory)
 
 
 
 
 %scatter by combo
-subplot(2,4,2)
+subplot(2,4,1)
 scatter_asa_neighbor_sim_1K_2D(dependency_directory)
 
 
 
 %metrics by within domain/not
-subplot(2,4,3)
+subplot(2,8,3)
 plot_asa_sim_1K_superfam(dependency_directory)
 
-subplot(2,4,4)
+subplot(2,8,4)
 plot_neighbor_sim_1K_superfam(dependency_directory)
 
 
 
 
+%break down phi/psi for unstr G specifically
 
-%repeat 2D analysis this way
-plot_asa_sim_1K_2D_superfam(8,dependency_directory)
-
-plot_neighbor_sim_1K_2D_superfam(10,dependency_directory)
-
-
-
-
-scatter_asa_neighbor_sim_1K_2D_superfam(6,dependency_directory)
-
+%put 2D plots in supp
+plot_phi_psi_sim_1K_residue(dependency_directory,'G','unstr.',4)
 
 
 
 set(gcf,'PaperPositionMode','auto')
 print([output_directory 'Figure_2_2'],'-dsvg','-r0')
 print([output_directory 'Figure_2_2'],'-djpeg','-r300')
+
+
+
+
+
+%repeat 2D analysis this way
+%plot_asa_sim_1K_2D_superfam(8,dependency_directory)
+
+%plot_neighbor_sim_1K_2D_superfam(10,dependency_directory)
+
+
+
+
+%scatter_asa_neighbor_sim_1K_2D_superfam(6,dependency_directory)
+
+
 
 
 %Figure S2
@@ -202,6 +216,13 @@ plot_neighbor_sim_1K_residue_age(dependency_directory)
 
 subplot(2,4,3)
 plot_dN_sim_1K_residue_age(dependency_directory)
+
+
+
+
+%put proline in the supp for reference
+plot_phi_psi_sim_1K_residue(dependency_directory,'P','unstr.',4)
+
 
 
 set(gcf,'PaperPositionMode','auto')

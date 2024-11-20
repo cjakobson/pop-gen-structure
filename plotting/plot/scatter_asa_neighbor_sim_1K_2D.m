@@ -75,12 +75,17 @@ for i=1:length(aa_labels)
 
         to_plot(i,j)=mean(mean(temp_neighbor_mat_1K(temp_idx4),'omitnan'),'omitnan')/...
             mean(mean(temp_neighbor_mat_sim(temp_idx3),'omitnan'),'omitnan');
+
+        %to label points
+        temp_labels{i,j}=[structure_labels{j} ' ' aa_labels{i}];
         
     end
     
 end
 
 to_plot_neighbor=to_plot;
+
+temp_labels=reshape(temp_labels,1,[]);
 
 v1=reshape(to_plot_asa,1,[]);
 v2=reshape(to_plot_neighbor,1,[]);
@@ -93,6 +98,12 @@ axis square
 xlim([1 1.7])
 ylim([0.7 1])
 
+%label interesting points
+for i=1:length(temp_labels)
+    if (v1(i)>1.4)||(v2(i)<0.85)
+        text(v1(i),v2(i),temp_labels{i})
+    end
+end
 
 
 end
