@@ -89,7 +89,7 @@ bar([to_plot1; to_plot2]','BaseValue',1)
 for i=1:length(p_val)
     text(i,0.9,num2str(p_val(i)),'Rotation',-45)
 end
-ylim([0.8 1.4])
+ylim([0.8 1.3])
 title('ASA (Ang.^2) 1K/sim')
 xticks(1:length(structure_labels))
 xtickangle(45)

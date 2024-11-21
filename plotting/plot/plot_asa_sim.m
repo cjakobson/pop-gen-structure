@@ -12,7 +12,7 @@ v1=v1(~isnan(v1));
 
 
 hold on
-histogram(v1,0:10:250)%,'Normalization','probability')
+histogram(v1,0:10:300)%,'Normalization','probability')
 axis square
 legend({'all residues'})
 title('all residues in proteome')
