@@ -17,6 +17,8 @@ ylabel('log_{10}q')
 xlim([-3 3])
 ylim([-5 25])
 plot(xlim,[2 2],':r')
+text(2,-3,['n sig = ' num2str(sum(v2>2))])
+text(2,-4,['n total = ' num2str(length(v2))])
 
 
 end
