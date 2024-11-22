@@ -14,7 +14,8 @@ addpath([code_directory 'plotting/plot'])
 tic
 
 
-ecotype_data=readtable([dependency_directory '1002_genomes_ecotypes.txt']);
+ecotype_data=readtable([dependency_directory '1002_genomes_ecotypes.txt'],...
+    'NumHeaderLines',0);
 
 
 load([dependency_directory '1002_data_common.mat'])
@@ -24,8 +25,18 @@ strain_names=ecotype_data.StandardID;
 
 %match strain names
 for i=1:length(strainString)
+    
+    if length(strainString{i})>4
+        
+        strain_query=[strainString{i}((end-2):end) '*'];
+        
+    else
+        
+        strain_query=strainString{i};
+        
+    end
 
-    temp_idx=find(ismember(strain_names,strainString{i}));
+    temp_idx=find(ismember(strain_names,strain_query));
 
     if ~isempty(temp_idx)
             
@@ -39,6 +50,10 @@ for i=1:length(strainString)
 
 end
 niche_names=unique(v_niche);
+
+sum(ismember(v_niche,'NA'));
+
+
 
 %convert to numerical
 for i=1:length(niche_names)
@@ -102,9 +117,6 @@ for i=1:length(chr)
     
 
 end
-
-
-
 
 
 chr_common=chr;
@@ -203,6 +215,49 @@ af_to_output=af_common(output_idx);
 niche_mat_ref_to_output=niche_mat_ref(output_idx,:);
 niche_mat_alt_to_output=niche_mat_alt(output_idx,:);
 
+%calculate p values here to save time
+
+
+%calculate niche enrichment p values
+niche_p_mat=nan(length(chr_to_output),length(niche_names));
+niche_alt_enrichment_mat=niche_p_mat;
+for i=1:length(chr_to_output)
+    
+    for j=1:length(niche_names)
+    
+        n1=niche_mat_ref_to_output(i,j);
+        n2=sum(niche_mat_ref_to_output(i,1:(j-1)))+sum(niche_mat_ref_to_output(i,(j+1):end));
+        n3=niche_mat_alt_to_output(i,j);
+        n4=sum(niche_mat_alt_to_output(i,1:(j-1)))+sum(niche_mat_alt_to_output(i,(j+1):end));
+        temp_table=table([n1;n3],[n2;n4],...
+            'VariableNames',{'this niche','all other'},'RowNames',{'ref','alt'});
+        [h,p,stats]=fishertest(temp_table);
+        
+        niche_p_mat(i,j)=p;
+        niche_alt_enrichment_mat(i,j)=(n3/n1)/(n4/n2);
+        
+    end
+    
+    %output best p and enrichment for that SNP
+    [min_p,min_idx]=min(niche_p_mat(i,:));
+    
+    niche_min_p(i)=min_p;
+    niche_min_enrichment(i)=niche_alt_enrichment_mat(i,min_idx);
+    niche_min_identitiy(i)=min_idx;
+    
+end
+
+
+% histogram(-log10(length(chr_to_output)*niche_min_p))
+% 
+% gene_to_output(-log10(length(chr_to_output)*niche_min_p)>10)'
+% 
+% scatter(reshape(niche_alt_enrichment_mat,[],1),...
+%     reshape(-log10(niche_p_mat),[],1))
+
+
+
+
 %for table
 %Xchr
 %Xpos
@@ -212,6 +267,7 @@ niche_mat_alt_to_output=niche_mat_alt(output_idx,:);
 %asa
 %neighbors
 %Xmaf
+%niche p
 %Xref count for each niche
 %Xalt count for each niche
 
@@ -243,10 +299,38 @@ end
 
 to_output=table(chr_to_output',pos_to_output',gene_to_output',...
     residue_to_output',structure_to_output,asa_to_output,neighbors_to_output,...
-    af_to_output',niche_mat_ref_to_output,niche_mat_alt_to_output,...
-    'VariableName',{'chr','pos','gene','residue','asa','neighbors',...
-    'secondary','maf','ref_niches','alt_niches'});
+    af_to_output',niche_min_enrichment',-log10(niche_min_p'),niche_min_identitiy',niche_mat_ref_to_output,niche_mat_alt_to_output,...
+    'VariableName',{'chr','pos','gene','residue','secondary','asa','neighbors',...
+    'maf','niche_enrichment','niche_p_value','niche_id','ref_niches','alt_niches'});
 writetable(to_output,[dependency_directory '1K_common_annotated_niche.csv'])
+
+
+
+% 
+% maf_thresh=0.2;
+% p_thresh=10;
+% 
+% table_to_use=to_output(to_output.maf>maf_thresh,:);
+% 
+% sum(table_to_use.niche_p_value>p_thresh)
+% 
+% temp_idx=table_to_use.niche_p_value>p_thresh;
+% 
+% to_plot{1}=table_to_use.asa(temp_idx);
+% to_plot{2}=table_to_use.asa(~temp_idx);
+% 
+% subplot(2,4,1)
+% easy_box(to_plot)
+% 
+% 
+% to_plot{1}=table_to_use.neighbors(temp_idx);
+% to_plot{2}=table_to_use.neighbors(~temp_idx);
+% 
+% 
+% subplot(2,4,2)
+% easy_box(to_plot)
+
+
 
 
 
