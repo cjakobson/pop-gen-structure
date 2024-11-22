@@ -79,29 +79,29 @@ text(-150,0.03,['p = ' num2str(p_val2)])
 
 
 
-subplot(2,4,plot_offset+3)
-hold on
-h1=histogram2(to_plot{2},to_plot{4},-180:10:180,-180:10:180,...
-    'DisplayStyle','tile','ShowEmptyBins','on','Normalization','probability');
-title('sim')
-xlabel('\phi')
-ylabel('\psi')
-xlim([-180 180])
-ylim([-180 180])
-axis square
-
-
-
-subplot(2,4,plot_offset+4)
-hold on
-h2=histogram2(to_plot{1},to_plot{3},-180:10:180,-180:10:180,...
-    'DisplayStyle','tile','ShowEmptyBins','on','Normalization','probability');
-title('1K')
-xlabel('\phi')
-ylabel('\psi')
-xlim([-180 180])
-ylim([-180 180])
-axis square
+% subplot(2,4,plot_offset+3)
+% hold on
+% h1=histogram2(to_plot{2},to_plot{4},-180:10:180,-180:10:180,...
+%     'DisplayStyle','tile','ShowEmptyBins','on','Normalization','probability');
+% title('sim')
+% xlabel('\phi')
+% ylabel('\psi')
+% xlim([-180 180])
+% ylim([-180 180])
+% axis square
+% 
+% 
+% 
+% subplot(2,4,plot_offset+4)
+% hold on
+% h2=histogram2(to_plot{1},to_plot{3},-180:10:180,-180:10:180,...
+%     'DisplayStyle','tile','ShowEmptyBins','on','Normalization','probability');
+% title('1K')
+% xlabel('\phi')
+% ylabel('\psi')
+% xlim([-180 180])
+% ylim([-180 180])
+% axis square
 
 
 
