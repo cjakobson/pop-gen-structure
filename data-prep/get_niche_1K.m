@@ -1,8 +1,18 @@
-function [] = plot_common_niche(dependency_directory)
 
-blue=[43 172 226]./256;
-orange=[248 149 33]./256;
-grey=[128 128 128]./256;
+clear
+
+filebase='/Users/cjakobson/';
+%filebase='/Users/christopherjakobson/';
+
+code_directory=[filebase 'Documents/GitHub/pop-gen-structure/'];
+dependency_directory=[filebase '/Dropbox/JaroszLab/pop-gen-structure-dependencies/'];
+
+addpath([code_directory 'data-prep'])
+addpath([code_directory 'plotting'])
+addpath([code_directory 'plotting/plot'])
+
+tic
+
 
 ecotype_data=readtable([dependency_directory '1002_genomes_ecotypes.txt']);
 
@@ -96,68 +106,11 @@ end
 
 
 
-figure('units','normalized','outerposition',[0 0 1 1])
-
-for i=1:length(niche_names)
-    v_to_plot(i)=sum(v_niche_code==i);
-end
-subplot(2,4,1)
-bar(v_to_plot)
-xticks(1:length(niche_names))
-xtickangle(45)
-xticklabels(niche_names)
-axis square
-ylabel('frequency')
-title('broad niches')
-
-
-
-
-v_bins=0.05:0.05:0.5;
-v1=v_maf;
-v2=f_ferm_major;
-clear to_plot
-for i=1:(length(v_bins)-1)
-    temp_idx=logical((v1>=v_bins(i)).*(v1<v_bins(i+1)));
-    to_plot{i}=v2(temp_idx);
-end
-
-subplot(2,4,2)
-%scatter(v_maf,f_modal_niche_major,1,'k','filled')
-easy_box(to_plot)
-axis square
-xticklabels(v_bins)
-title('strains with major allele')
-ylabel('f_{ferm}')
-xlabel('MAF')
-ylim([0 1])
-
-
-
-v1=v_maf;
-v2=f_ferm_minor;
-clear to_plot
-for i=1:(length(v_bins)-1)
-    temp_idx=logical((v1>=v_bins(i)).*(v1<v_bins(i+1)));
-    to_plot{i}=v2(temp_idx);
-end
-
-subplot(2,4,3)
-%scatter(v_maf,f_modal_niche_major,1,'k','filled')
-easy_box(to_plot)
-axis square
-xticklabels(v_bins)
-title('strains with minor allele')
-ylabel('f_{ferm}')
-xlabel('MAF')
-ylim([0 1])
-
-
-
 
 chr_common=chr;
 pos_common=pos;
 alt_common=alt;
+af_common=v_maf;
 
 for i=1:length(alt_common)
     
@@ -171,7 +124,7 @@ load([dependency_directory '1K_data_annotated.mat'])
 
 %filter on af
 af(af>0.5)=af(af>0.5)-0.5;
-af_idx=af>0.05;
+af_idx=af>=0.05;
 
 chr=chr(af_idx);
 pos=pos(af_idx);
@@ -181,7 +134,7 @@ proteinEncoded=proteinEncoded(af_idx);
 chr(cellfun(@isempty,chr))={'NA'};
 for i=1:length(chr_common)
     
-    if mod(i,1000)==0
+    if mod(i,10000)==0
         i
     end
     
@@ -239,21 +192,67 @@ for i=1:length(protein_encoded_common)
     
 end
 
+output_idx=residue_common>0;
+
+chr_to_output=chr_common(output_idx);
+pos_to_output=pos_common(output_idx);
+gene_to_output=gene_common(output_idx);
+residue_to_output=residue_common(output_idx);
+
+af_to_output=af_common(output_idx);
+niche_mat_ref_to_output=niche_mat_ref(output_idx,:);
+niche_mat_alt_to_output=niche_mat_alt(output_idx,:);
 
 %for table
-%chr
-%pos
-%gene
-%residue #
-%ref residue
-%alt residue
-%maf
-%ref count for each niche
-%alt count for each niche
+%Xchr
+%Xpos
+%Xgene
+%Xresidue #
+%structure
+%asa
+%neighbors
+%Xmaf
+%Xref count for each niche
+%Xalt count for each niche
+
+%look up structure, asa and neighbors
+load([dependency_directory 'secondary_structure_data.mat'])
+load([dependency_directory 'asa_data.mat'])
+load([dependency_directory 'neighbor_data.mat'])
 
 
-
-
+asa_to_output=nan(length(gene_to_output),1);
+neighbors_to_output=nan(length(gene_to_output),1);
+structure_to_output=nan(length(gene_to_output),1);
+for i=1:length(gene_to_output)
+    
+    gene_idx=ismember(genes_to_use,gene_to_output{i});
+    
+    if sum(gene_idx)>0
+        
+        asa_to_output(i)=asa_mat(gene_idx,residue_to_output(i));
+        neighbors_to_output(i)=neighbor_mat(gene_idx,residue_to_output(i));
+        
+        [~,temp_structure]=structure_types(secondary_mat{gene_idx,residue_to_output(i)});
+        structure_to_output(i)=temp_structure;
+        
+    end
+    
 end
+
+
+to_output=table(chr_to_output',pos_to_output',gene_to_output',...
+    residue_to_output',structure_to_output,asa_to_output,neighbors_to_output,...
+    af_to_output',niche_mat_ref_to_output,niche_mat_alt_to_output,...
+    'VariableName',{'chr','pos','gene','residue','asa','neighbors',...
+    'secondary','maf','ref_niches','alt_niches'});
+writetable(to_output,[dependency_directory '1K_common_annotated_niche.csv'])
+
+
+
+toc
+
+
+
 
 

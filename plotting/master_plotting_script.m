@@ -10,8 +10,8 @@ set(0,'DefaultAxesFontSize',12)
 set(0,'DefaultAxesLineWidth',1)
 
 
-%filebase='/Users/cjakobson/';
-filebase='/Users/christopherjakobson/';
+filebase='/Users/cjakobson/';
+%filebase='/Users/christopherjakobson/';
 
 figure_counter=1;
 
@@ -299,6 +299,9 @@ print([output_directory 'Figure_3_1'],'-djpeg','-r300')
 
 
 %niche enrichments
+
+%move data processing for this to data prep and save as table for common
+%missense
 figure('units','normalized','outerposition',[0 0 1 1])
 
 subplot(2,4,1)
@@ -320,6 +323,16 @@ plot_asa_rare_common_af(dependency_directory)
 set(gcf,'PaperPositionMode','auto')
 print([output_directory 'Figure_S3_1'],'-dsvg','-r0')
 print([output_directory 'Figure_S3_1'],'-djpeg','-r300')
+
+
+
+%Figure 4
+
+%A.t. and H.s. analysis
+
+%allele frequency spectra first?
+
+
 
 
 
