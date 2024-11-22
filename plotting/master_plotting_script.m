@@ -305,7 +305,31 @@ print([output_directory 'Figure_3_1'],'-djpeg','-r300')
 figure('units','normalized','outerposition',[0 0 1 1])
 
 subplot(2,4,1)
+plot_niche_volcano(dependency_directory)
 
+
+%GAL2
+subplot(2,8,3)
+plot_niche_example(dependency_directory,'XII',290669)
+
+%CAC2
+subplot(2,8,4)
+plot_niche_example(dependency_directory,'XIII',69500)
+
+%SIR4
+subplot(2,8,5)
+plot_niche_example(dependency_directory,'IV',920977)
+
+%SLF1
+subplot(2,8,6)
+plot_niche_example(dependency_directory,'IV',1474060)
+
+
+
+
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'Figure_3_2'],'-dsvg','-r0')
+print([output_directory 'Figure_3_2'],'-djpeg','-r300')
 
 
 

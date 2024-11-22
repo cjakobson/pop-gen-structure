@@ -297,11 +297,14 @@ for i=1:length(gene_to_output)
 end
 
 
+%change to Bonferroni q
+niche_min_q=niche_min_p.*(length(chr_to_output).*length(niche_names));
+
 to_output=table(chr_to_output',pos_to_output',gene_to_output',...
     residue_to_output',structure_to_output,asa_to_output,neighbors_to_output,...
-    af_to_output',niche_min_enrichment',-log10(niche_min_p'),niche_min_identitiy',niche_mat_ref_to_output,niche_mat_alt_to_output,...
+    af_to_output',niche_min_enrichment',-log10(niche_min_q'),niche_min_identitiy',niche_mat_ref_to_output,niche_mat_alt_to_output,...
     'VariableName',{'chr','pos','gene','residue','secondary','asa','neighbors',...
-    'maf','niche_enrichment','niche_p_value','niche_id','ref_niches','alt_niches'});
+    'maf','niche_enrichment','niche_q_value','niche_id','ref_niches','alt_niches'});
 writetable(to_output,[dependency_directory '1K_common_annotated_niche.csv'])
 
 
