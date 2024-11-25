@@ -354,7 +354,69 @@ print([output_directory 'Figure_S3_1'],'-djpeg','-r300')
 
 %A.t. and H.s. analysis
 
-%allele frequency spectra first?
+figure('units','normalized','outerposition',[0 0 1 1])
+
+subplot(2,4,1)
+plot_At_asa_rare_common(dependency_directory)
+
+
+subplot(2,4,2)
+plot_At_neighbor_rare_common(dependency_directory)
+
+
+subplot(2,4,3)
+plot_At_rare_common_structure(dependency_directory)
+
+
+
+subplot(2,4,5)
+plot_Hs_asa_rare_common(dependency_directory)
+
+
+subplot(2,4,6)
+plot_Hs_neighbor_rare_common(dependency_directory)
+
+
+subplot(2,4,7)
+plot_Hs_rare_common_structure(dependency_directory)
+
+
+
+
+
+
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'Figure_4_1'],'-dsvg','-r0')
+print([output_directory 'Figure_4_1'],'-djpeg','-r300')
+
+
+
+%Figure S4
+
+figure('units','normalized','outerposition',[0 0 1 1])
+
+%A
+%allele frequency spectra
+subplot(2,4,1)
+plot_af_all(dependency_directory)
+
+
+%B
+%strcture breakdown by organism
+subplot(2,4,2)
+plot_structure_all(dependency_directory)
+
+
+%C
+%mutations per gene for each collection
+subplot(2,4,3)
+plot_mutations_per_gene(dependency_directory)
+
+
+
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'Figure_S4_1'],'-dsvg','-r0')
+print([output_directory 'Figure_S4_1'],'-djpeg','-r300')
 
 
 
