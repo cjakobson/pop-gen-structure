@@ -10,8 +10,8 @@ set(0,'DefaultAxesFontSize',12)
 set(0,'DefaultAxesLineWidth',1)
 
 
-filebase='/Users/cjakobson/';
-%filebase='/Users/christopherjakobson/';
+%filebase='/Users/cjakobson/';
+filebase='/Users/christopherjakobson/';
 
 figure_counter=1;
 
@@ -419,7 +419,82 @@ print([output_directory 'Figure_S4_1'],'-dsvg','-r0')
 print([output_directory 'Figure_S4_1'],'-djpeg','-r300')
 
 
+%Figure 5
 
+%A
+%scheme
+
+
+figure('units','normalized','outerposition',[0 0 1 1])
+
+%B
+%pilot endpoint
+subplot(2,8,1)
+plot_evo_pilot(dependency_directory)
+
+
+%C
+%example curves
+subplot(2,2,2)
+plot_evo_example_curves(dependency_directory)
+
+
+
+%D
+%rates over time
+subplot(2,2,3)
+plot_evo_rates(dependency_directory)
+
+
+
+%E
+%rates of emergence
+subplot(2,4,7)
+plot_evo_emergence_rate(dependency_directory)
+
+
+
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'Figure_5_1'],'-dsvg','-r0')
+print([output_directory 'Figure_5_1'],'-djpeg','-r300')
+
+
+
+figure('units','normalized','outerposition',[0 0 1 1])
+
+%F
+%post hoc measurements
+subplot(2,4,1)
+plot_evo_rates_rap(dependency_directory)
+
+%G
+%growth in YPD no drug
+subplot(2,4,2)
+plot_evo_rates_no_drug(dependency_directory)
+
+
+
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'Figure_5_2'],'-dsvg','-r0')
+print([output_directory 'Figure_5_2'],'-djpeg','-r300')
+
+
+
+%Figure S5
+
+figure('units','normalized','outerposition',[0 0 1 1])
+
+%A
+%no drug passage control
+subplot(2,4,1)
+plot_control_rates_rap(dependency_directory)
+
+
+
+
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'Figure_S5_1'],'-dsvg','-r0')
+print([output_directory 'Figure_S5_1'],'-djpeg','-r300')
 
 
 toc
