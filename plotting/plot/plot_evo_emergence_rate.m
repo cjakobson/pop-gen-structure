@@ -47,8 +47,13 @@ for i=1:2
 end
 
 hold on
-plot(n_adapted(1,:),'k')
-plot(n_adapted(2,:),'k')
+
+v1=n_adapted(1,:);
+v2=n_adapted(2,:);
+plot(v1,'k')
+plot(v2,'k')
+scatter(1:length(v1),v1,25,'k','filled')
+scatter(1:length(v2),v2,25,'k','filled')
 axis square
 xlabel('passage')
 ylabel('n adapted lineages')

@@ -454,6 +454,7 @@ plot_evo_emergence_rate(dependency_directory)
 
 
 
+%force svg output
 set(gcf,'PaperPositionMode','auto')
 print([output_directory 'Figure_5_1'],'-dsvg','-r0')
 print([output_directory 'Figure_5_1'],'-djpeg','-r300')
@@ -495,6 +496,13 @@ plot_control_rates_rap(dependency_directory)
 set(gcf,'PaperPositionMode','auto')
 print([output_directory 'Figure_S5_1'],'-dsvg','-r0')
 print([output_directory 'Figure_S5_1'],'-djpeg','-r300')
+
+
+
+%FPR1 sequencing analysis
+
+
+
 
 
 toc

@@ -32,7 +32,9 @@ ylabel('final spot size')
 %axis square
 title('rapamycin pilot')
 xlim([0.5 3.5])
-evo_thresh_spot_size=1500;
+
+evo_thresh_spot_size=1000;%1500;
+
 plot(xlim,[evo_thresh_spot_size evo_thresh_spot_size],':r')
 for i=1:length(to_plot)
     n_adapted=sum(to_plot{i}>evo_thresh_spot_size);
