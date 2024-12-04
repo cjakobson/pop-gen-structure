@@ -133,6 +133,16 @@ scatter_neighbor_dN_gene(dependency_directory)
 
 %GO-term analysis -- highlight metabolic process genes on A? boxplot of
 %split by GO term?
+%histograms for ASA and neighbors
+
+%D
+subplot(2,4,5)
+go_term='transmembrane transport';
+plot_asa_go_term(go_term,dependency_directory)
+
+subplot(2,4,6)
+plot_neighbor_go_term(go_term,dependency_directory)
+
 
 
 
@@ -142,11 +152,11 @@ scatter_neighbor_dN_gene(dependency_directory)
 
 %split genes into young/ancient
 %F
-subplot(2,4,4)
+subplot(2,4,7)
 plot_asa_sim_1K_structure_age(dependency_directory)
 
 %G
-subplot(2,4,5)
+subplot(2,4,8)
 plot_neighbor_sim_1K_structure_age(dependency_directory)
 
 
