@@ -509,9 +509,20 @@ print([output_directory 'Figure_S5_1'],'-djpeg','-r300')
 
 
 
+%Figure 6
+
 %FPR1 sequencing analysis
 
+%plot growth curves for WGS isolates
+mutation_names={'Fpr1^{I63T}','Fpr1^{E77K}','Fpr1^{L28*}',...
+    'Fpr1^{I63T}','Pdr1^{I283N}','Fpr1^{Q54K}'};
+evo_plate_pos={'1F17','1G7','1G16',...
+    '1G40','2A30','2B44'};
 
+figure('units','normalized','outerposition',[0 0 1 1])
+
+subplot(2,2,1)
+plot_wgs_clones(dependency_directory,mutation_names,evo_plate_pos)
 
 
 
