@@ -57,7 +57,7 @@ for i=1:2%length(condition_names)
 
     end
 
-    for j=101:200%length(adapted_idx)
+    for j=101:112%200%length(adapted_idx)
 
         v1=1:n_time_points;
         v2=condition_slope_mat{i}(:,non_adapted_idx{i}(j));

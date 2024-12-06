@@ -133,6 +133,16 @@ scatter_neighbor_dN_gene(dependency_directory)
 
 %GO-term analysis -- highlight metabolic process genes on A? boxplot of
 %split by GO term?
+%histograms for ASA and neighbors
+
+%D
+subplot(2,4,5)
+go_term='transmembrane transport';
+plot_asa_go_term(go_term,dependency_directory)
+
+subplot(2,4,6)
+plot_neighbor_go_term(go_term,dependency_directory)
+
 
 
 
@@ -142,11 +152,11 @@ scatter_neighbor_dN_gene(dependency_directory)
 
 %split genes into young/ancient
 %F
-subplot(2,4,4)
+subplot(2,4,7)
 plot_asa_sim_1K_structure_age(dependency_directory)
 
 %G
-subplot(2,4,5)
+subplot(2,4,8)
 plot_neighbor_sim_1K_structure_age(dependency_directory)
 
 
@@ -454,6 +464,7 @@ plot_evo_emergence_rate(dependency_directory)
 
 
 
+%force svg output
 set(gcf,'PaperPositionMode','auto')
 print([output_directory 'Figure_5_1'],'-dsvg','-r0')
 print([output_directory 'Figure_5_1'],'-djpeg','-r300')
@@ -495,6 +506,24 @@ plot_control_rates_rap(dependency_directory)
 set(gcf,'PaperPositionMode','auto')
 print([output_directory 'Figure_S5_1'],'-dsvg','-r0')
 print([output_directory 'Figure_S5_1'],'-djpeg','-r300')
+
+
+
+%Figure 6
+
+%FPR1 sequencing analysis
+
+%plot growth curves for WGS isolates
+mutation_names={'Fpr1^{I63T}','Fpr1^{E77K}','Fpr1^{L28*}',...
+    'Fpr1^{I63T}','Pdr1^{I283N}','Fpr1^{Q54K}'};
+evo_plate_pos={'1F17','1G7','1G16',...
+    '1G40','2A30','2B44'};
+
+figure('units','normalized','outerposition',[0 0 1 1])
+
+subplot(2,2,1)
+plot_wgs_clones(dependency_directory,mutation_names,evo_plate_pos)
+
 
 
 toc
