@@ -478,12 +478,6 @@ figure('units','normalized','outerposition',[0 0 1 1])
 subplot(2,4,1)
 plot_evo_rates_rap(dependency_directory)
 
-%G
-%growth in YPD no drug
-subplot(2,4,2)
-plot_evo_rates_no_drug(dependency_directory)
-
-
 
 set(gcf,'PaperPositionMode','auto')
 print([output_directory 'Figure_5_2'],'-dsvg','-r0')
@@ -499,6 +493,12 @@ figure('units','normalized','outerposition',[0 0 1 1])
 %no drug passage control
 subplot(2,4,1)
 plot_control_rates_rap(dependency_directory)
+
+
+%growth in YPD no drugvacanSan      FSaS
+%B
+subplot(2,4,2)
+plot_evo_rates_no_drug(dependency_directory)
 
 
 
@@ -519,10 +519,60 @@ mutation_names={'Fpr1^{I63T}','Fpr1^{E77K}','Fpr1^{L28*}',...
 evo_plate_pos={'1F17','1G7','1G16',...
     '1G40','2A30','2B44'};
 
+
 figure('units','normalized','outerposition',[0 0 1 1])
 
 subplot(2,2,1)
-plot_wgs_clones(dependency_directory,mutation_names,evo_plate_pos)
+plot_wgs_clones(dependency_directory,evo_plate_pos)
+
+
+%fitness of targeted pools
+subplot(2,4,3)
+plot_pool_fitness(dependency_directory)
+
+%account for number of isolates per pool in FPR1 analysis
+
+%expected number of doubles
+subplot(2,4,5)
+plot_multi_hit_simulation(dependency_directory)
+
+
+%ASA and neighbors for missense
+subplot(2,8,11)
+plot_evo_asa(dependency_directory)
+
+subplot(2,8,12)
+plot_evo_neighbors(dependency_directory)
+
+
+%simulate ASA
+subplot(2,4,7)
+plot_asa_simulation(dependency_directory)
+
+
+subplot(2,4,8)
+scatter_evo_asa_neighbors(dependency_directory)
+
+
+
+
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'Figure_6_1'],'-dsvg','-r0')
+print([output_directory 'Figure_6_1'],'-djpeg','-r300')
+
+
+
+%Figure S6
+
+
+figure('units','normalized','outerposition',[0 0 1 1])
+
+
+
+
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'Figure_S6_1'],'-dsvg','-r0')
+print([output_directory 'Figure_S6_1'],'-djpeg','-r300')
 
 
 

@@ -47,7 +47,13 @@ end
 base_array={'A','C','T','G'};
 
 read_thresh=40;%100;
-fraction_thresh=0.33;
+fraction_thresh_missense=0.33;
+fraction_thresh_indel=2*fraction_thresh_missense;%0.8;
+
+n_clones_in_pool=[12 12 12 12 12 9,...
+    12 12 12 12 12 9,...
+    12 12 8 12 12 12,...
+    12 12 7 12 12 12];
 
 missense_position=cell(length(to_read),1);
 ref_base=missense_position;
@@ -71,7 +77,7 @@ for i=1:length(to_read)
     all_fraction=[all_fraction;v_fraction];
     
     %temp_idx=find(v_mismatch>read_thresh);
-    temp_idx=find(v_fraction*12>=fraction_thresh);
+    temp_idx=find(v_fraction*n_clones_in_pool(i)>=fraction_thresh_missense);
     
     
     for j=1:length(temp_idx)
@@ -87,8 +93,14 @@ for i=1:length(to_read)
     
     v_indel=max(table2array(input_table(:,6:7)),[],2);
     
-    temp_idx=find(v_indel>read_thresh);
     
+    v_fraction=v_indel./v_counts;
+
+    
+    
+    %temp_idx=find(v_mismatch>read_thresh);
+    temp_idx=find(v_fraction*n_clones_in_pool(i)>=fraction_thresh_indel);
+
     
     for j=1:length(temp_idx)
         
@@ -221,6 +233,35 @@ missense_fraction=missense_fraction(pools_to_use);
 indel_position=indel_position(pools_to_use);
 indel_pos_fpr1=indel_pos_fpr1(pools_to_use);
 
+n_clones_in_pool=n_clones_in_pool(pools_to_use);
+
+%filter for indels in gene
+length_thresh=fpr1_length;
+for i=1:length(indel_pos_fpr1)
+    
+    temp_idx=logical((indel_pos_fpr1{i}>0).*(indel_pos_fpr1{i}<=length_thresh));
+    
+    indel_position{i}=indel_position{i}(temp_idx);
+    indel_pos_fpr1{i}=indel_pos_fpr1{i}(temp_idx);
+    
+    %merge neighboring (same indel)
+    to_clear=zeros(1,length(indel_pos_fpr1{i}));
+    for j=2:length(indel_pos_fpr1{i})
+        
+        if abs(indel_pos_fpr1{i}(j)-indel_pos_fpr1{i}(j-1))==1
+            
+            to_clear(j)=1;
+            
+        end
+        
+    end
+    
+    indel_position{i}(logical(to_clear))=[];
+    indel_pos_fpr1{i}(logical(to_clear))=[];
+
+    
+end
+
 v_direction=v_direction(pools_to_use);
 
 %output table by pool
@@ -243,7 +284,7 @@ for i=1:length(pools_to_use)
     for j=1:length(missense_encoded{i})
 
         v_temp=[v_temp missense_encoded{i}{sort_idx(j)} '_'...
-            num2str(12*missense_fraction{i}(sort_idx(j))) ' '];
+            num2str(n_clones_in_pool(i)*missense_fraction{i}(sort_idx(j))) ' '];
 
     end
 
@@ -263,23 +304,78 @@ for i=1:length(pools_to_use)
 
 end
 
-to_output=table(pool_names',pool_mutations',...
-    'VariableNames',{'pool','mutations'});
-writetable(to_output,[dependency_directory 'FPR1_primordium_SNPs.txt'])
 
-all_missense_identified=sort(all_missense_identified);
-unique_missense_identified=unique(all_missense_identified);
+%make output tables for missense, LoF, and indels
+m=1;
+for i=1:length(missense_encoded)
+    
+    temp_array=missense_encoded{i};
+    
+    for j=1:length(temp_array)
+        
+        temp_str=temp_array{j};
+        
+        snp_encoded{m}=temp_str;
+        
+        snp_ref{m}=temp_str(1);
+        snp_alt{m}=temp_str(end);
+        
+        snp_pos(m)=str2num(temp_str(2:(end-1)));
+        
+        snp_frequency(m)=n_clones_in_pool(i)*missense_fraction{i}(j);
+        
+        snp_pool(m)=i;
+        
+        m=m+1;
+        
+    end
+    
+end
+
+%exclude start codon and premature stops
+temp_idx1=snp_pos>1;
+temp_idx2=~ismember(snp_alt,'*');
+
+to_use=logical(temp_idx1.*temp_idx2);
+
+missense_pos_to_output=snp_pos(to_use);
+missense_encoded_to_output=snp_encoded(to_use);
+missense_pool_to_output=snp_pool(to_use);
+missense_frequency_to_output=snp_frequency(to_use);
+
+clone_thresh=1.5;
+missense_inferred_clones=missense_frequency_to_output;
+missense_inferred_clones(missense_inferred_clones>clone_thresh)=2;
+missense_inferred_clones(missense_inferred_clones<=clone_thresh)=1;
+
+[~,sort_idx]=sort(missense_pos_to_output,'ascend');
+
+to_output=table(missense_pos_to_output(sort_idx)',...
+    missense_encoded_to_output(sort_idx)',...
+    missense_pool_to_output(sort_idx)',missense_frequency_to_output(sort_idx)',...
+    missense_inferred_clones(sort_idx)');
+writetable(to_output,[dependency_directory 'FPR1_primordium_missense.csv'])
 
 
-sum(cellfun(@length,missense_encoded))
+lof_pos_to_output=snp_pos(~to_use);
+lof_encoded_to_output=snp_encoded(~to_use);
+lof_pool_to_output=snp_pool(~to_use);
+lof_frequency_to_output=snp_frequency(~to_use);
+
+lof_inferred_clones=lof_frequency_to_output;
+lof_inferred_clones(lof_inferred_clones>clone_thresh)=2;
+lof_inferred_clones(lof_inferred_clones<=clone_thresh)=1;
+
+[~,sort_idx]=sort(lof_pos_to_output,'ascend');
+
+to_output=table(lof_pos_to_output(sort_idx)',...
+    lof_encoded_to_output(sort_idx)',...
+    lof_pool_to_output(sort_idx)',lof_frequency_to_output(sort_idx)',...
+    lof_inferred_clones(sort_idx)');
+writetable(to_output,[dependency_directory 'FPR1_primordium_lof.csv'])
 
 
-
-
-
-
-
-
+hbrva
 
 
 
@@ -404,182 +500,6 @@ for i=1:length(to_plot)
     end
 end
 
-
-
-
-
-dyjntsbrew
-
-
-%no rad
-allNoRad=[];
-for i=[1:3 7:9 13:15 19:21]%1:2
-    
-    for j=1:length(missense_encoded{i})
-    
-        if ~strcmp(missense_encoded{i}{j}(end),'*')
-    
-            allNoRad=[allNoRad missense_pos_fpr1{i}(j)];
-            
-        end
-        
-    end
-    
-end
-
-%allNoRad=unique(allNoRad);
-
-%convert to residue
-for i=1:length(allNoRad)
-    
-    allNoRad(i)=ceil(allNoRad(i)/3);
-    
-end
-
-
-allRad=[];
-for i=[4:6 10:12 16:18 22:24]%3:4
-     
-    for j=1:length(missense_encoded{i})
-    
-        if ~strcmp(missense_encoded{i}{j}(end),'*')
-    
-            allRad=[allRad missense_pos_fpr1{i}(j)];
-            
-        end
-        
-    end
-    
-end
-
-
-%allRad=unique(allRad);
-
-%convert to residue
-for i=1:length(allRad)
-    
-    allRad(i)=ceil(allRad(i)/3);
-    
-end
-
-
-
-
-
-figure('units','normalized','outerposition',[0 0 1 1])
-
-
-subplot(2,8,1)
-hold on
-
-clear toPlot
-to_plot{1}=dssp_table.sasa(allNoRad);
-to_plot{2}=dssp_table.sasa;
-
-easyBox(to_plot)
-ylim([0 200])
-title('SASA')
-tempLabels={'resistant no rad','all'};
-xticks(1:length(tempLabels))
-xtickangle(45)
-xticklabels(tempLabels)
-m=1;
-for i=1:length(to_plot)
-    for j=(i+1):length(to_plot)
-        [h p]=ttest2(to_plot{i},to_plot{j});
-        text((i+j)/2,100+25*m,num2str(p))
-        m=m+1;
-    end
-end
-
-
-subplot(2,8,2)
-hold on
-
-clear toPlot
-to_plot{1}=neighbor_table.neighbors(allNoRad);
-to_plot{2}=neighbor_table.neighbors;
-
-easyBox(to_plot)
-ylim([0 30])
-title('neighbors')
-tempLabels={'resistant no rad','all'};
-xticks(1:length(tempLabels))
-xtickangle(45)
-xticklabels(tempLabels)
-m=1;
-for i=1:length(to_plot)
-    for j=(i+1):length(to_plot)
-        [h p]=ttest2(to_plot{i},to_plot{j});
-        text((i+j)/2,25+1*m,num2str(p))
-        m=m+1;
-    end
-end
-
-
-
-
-
-subplot(2,8,9)
-hold on
-
-clear toPlot
-to_plot{1}=dssp_table.sasa(allNoRad);
-to_plot{2}=dssp_table.sasa(allRad);
-to_plot{3}=dssp_table.sasa;
-
-easyBox(to_plot)
-ylim([0 200])
-title('SASA')
-tempLabels={'resistant no rad','resistant rad','all'};
-xticks(1:length(tempLabels))
-xtickangle(45)
-xticklabels(tempLabels)
-m=1;
-for i=1:length(to_plot)
-    for j=(i+1):length(to_plot)
-        [h p]=ttest2(to_plot{i},to_plot{j});
-        text((i+j)/2,100+25*m,num2str(p))
-        m=m+1;
-    end
-end
-
-
-
-
-subplot(2,8,10)
-hold on
-
-clear toPlot
-to_plot{1}=neighbor_table.neighbors(allNoRad);
-to_plot{2}=neighbor_table.neighbors(allRad);
-to_plot{3}=neighbor_table.neighbors;
-
-easyBox(to_plot)
-ylim([0 30])
-title('neighbors')
-tempLabels={'resistant no rad','resistant rad','all'};
-xticks(1:length(tempLabels))
-xtickangle(45)
-xticklabels(tempLabels)
-m=1;
-for i=1:length(to_plot)
-    for j=(i+1):length(to_plot)
-        [h p]=ttest2(to_plot{i},to_plot{j});
-        text((i+j)/2,25+1*m,num2str(p))
-        m=m+1;
-    end
-end
-
-
-
-
-
-
-set(gcf,'PaperPositionMode','auto')
-print(['fpr1_mutations_' num2str(figureCounter)],'-dsvg','-r0')
-print(['fpr1_mutations_' num2str(figureCounter)],'-djpeg','-r300')
-figureCounter=figureCounter+1;
 
 
 
