@@ -10,8 +10,8 @@ set(0,'DefaultAxesFontSize',12)
 set(0,'DefaultAxesLineWidth',1)
 
 
-%filebase='/Users/cjakobson/';
-filebase='/Users/christopherjakobson/';
+filebase='/Users/cjakobson/';
+%filebase='/Users/christopherjakobson/';
 
 figure_counter=1;
 
