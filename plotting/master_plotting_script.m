@@ -394,10 +394,29 @@ plot_Hs_rare_common_structure(dependency_directory)
 
 
 
-
 set(gcf,'PaperPositionMode','auto')
 print([output_directory 'Figure_4_1'],'-dsvg','-r0')
 print([output_directory 'Figure_4_1'],'-djpeg','-r300')
+
+
+
+%bridge to experimental evolution using mave datasets
+
+%yeast Hsp82
+
+figure('units','normalized','outerposition',[0 0 1 1])
+
+plot_mave_hsp90(dependency_directory,0)
+
+
+plot_mave_cbs(dependency_directory,2)
+
+
+
+
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'Figure_4_2'],'-dsvg','-r0')
+print([output_directory 'Figure_4_2'],'-djpeg','-r300')
 
 
 
