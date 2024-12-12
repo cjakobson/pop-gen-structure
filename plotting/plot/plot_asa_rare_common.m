@@ -31,6 +31,8 @@ xlabel('ASA (Ang.^2)')
 %set(gca,'YScale','log')
 [h p]=kstest2(v1,v2);
 text(200,0.1,['p = ' num2str(p)])
+text(200,0.08,['rare = ' num2str(length(v1))])
+text(200,0.06,['common = ' num2str(length(v2))])
 
 
 end
