@@ -406,11 +406,25 @@ print([output_directory 'Figure_4_1'],'-djpeg','-r300')
 
 figure('units','normalized','outerposition',[0 0 1 1])
 
+
 plot_mave_hsp90(dependency_directory,0)
 
 
 plot_mave_cbs(dependency_directory,2)
 
+
+%ROC in 2D for mave data
+
+subplot(2,4,5)
+plot_mave_hsp90_roc(dependency_directory)
+
+% subplot(2,4,6)
+% plot_mave_hsp90_prc(dependency_directory)
+
+
+
+subplot(2,4,6)
+plot_mave_cbs_roc(dependency_directory)
 
 
 
