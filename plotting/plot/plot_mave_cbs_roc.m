@@ -1,4 +1,4 @@
-function [] = plot_mave_cbs(dependency_directory,plot_offset)
+function [] = plot_mave_cbs_roc(dependency_directory,plot_offset)
 
 blue=[43 172 226]./256;
 orange=[248 149 33]./256;
@@ -68,12 +68,14 @@ v_bins_neighbors=0:5:30;
 %threshold for "unfit"
 
 %v_fit_thresh=0.2:0.1:0.4;
-v_fit_thresh=0.4;
+v_unfit_thresh=0.3;
+v_fit_thresh=0.5;
 
 for k=1:length(v_fit_thresh)
 
-    actual_unfit_idx=v3<v_fit_thresh(k);
-    f_unfit=sum(actual_unfit_idx)/length(actual_unfit_idx);
+    actual_unfit_idx=v3<v_unfit_thresh(k);
+    actual_fit_idx=v3>v_fit_thresh(k);
+    f_unfit=sum(actual_unfit_idx)/sum(actual_fit_idx);
     text(0.6,0.1,num2str(f_unfit))
     
     m=1;
@@ -86,8 +88,8 @@ for k=1:length(v_fit_thresh)
     
             tpr(m)=sum(predicted_unfit_idx.*actual_unfit_idx)/...
                 sum(actual_unfit_idx);
-            fpr(m)=sum(predicted_unfit_idx.*~actual_unfit_idx)/...
-                sum(~actual_unfit_idx);
+            fpr(m)=sum(predicted_unfit_idx.*actual_fit_idx)/...
+                sum(actual_fit_idx);
             m=m+1;
     
         end
