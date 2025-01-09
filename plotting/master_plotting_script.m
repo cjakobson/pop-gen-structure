@@ -423,9 +423,10 @@ plot_mave_hsp90_roc(dependency_directory)
 
 
 
-subplot(2,4,6)
-plot_mave_cbs_roc(dependency_directory)
+%subplot(2,4,6)
+plot_mave_cbs_roc(dependency_directory,5)
 
+%add clinvar pathogenic missense?
 
 
 set(gcf,'PaperPositionMode','auto')

@@ -46,22 +46,32 @@ load([dependency_directory 'mat-files/' systematic_name '_neighbor_table.mat'])
 neighbor_table=output_table;
 
 %mean fitness
-unique_residues=unique(v_residue);
-for i=1:length(unique_residues)
-    
-    residue_to_plot(i)=unique_residues(i);
-    fitness_to_plot(i)=mean(v_fitness(v_residue==unique_residues(i)));
-    
-    neighbors_to_plot(i)=neighbor_table.neighbors(unique_residues(i));
-    asa_to_plot(i)=dssp_table.sasa(unique_residues(i));
-    
+% unique_residues=unique(v_residue);
+% for i=1:length(unique_residues)
+% 
+%     residue_to_plot(i)=unique_residues(i);
+%     fitness_to_plot(i)=mean(v_fitness(v_residue==unique_residues(i)));
+% 
+%     neighbors_to_plot(i)=neighbor_table.neighbors(unique_residues(i));
+%     asa_to_plot(i)=dssp_table.sasa(unique_residues(i));
+% 
+% end
+
+for i=1:length(v_fitness)
+
+    v_neighbors(i)=neighbor_table.neighbors(v_residue(i));
+    v_asa(i)=dssp_table.sasa(v_residue(i));
+
 end
 
 
-v1=asa_to_plot;
-v2=fitness_to_plot;
+% v1=asa_to_plot;
+% v2=fitness_to_plot;
 
-v_bins=0:30:180;
+v1=v_asa;
+v2=v_fitness;
+
+v_bins=0:20:200;
 clear to_plot
 for i=2:length(v_bins)
     temp_idx=logical((v1>=v_bins(i-1)).*(v1<v_bins(i)));
@@ -75,15 +85,21 @@ xlabel('ASA (Ang.^2)')
 ylabel('fitness')
 xticks(1:length(v_bins(2:end)))
 xticklabels(v_bins(2:end))
-ylim([-1.5 0.1])
+ylim([-2 0.1])
 title('yeast Hsp90')
+for i=1:length(to_plot)
+    text(i,-1.8,num2str(length(to_plot{i})))
+end
 
 
 
-v1=neighbors_to_plot;
-v2=fitness_to_plot;
+% v1=neighbors_to_plot;
+% v2=fitness_to_plot;
 
-v_bins=0:5:30;
+v1=v_neighbors;
+v2=v_fitness;
+
+v_bins=3:3:30;
 clear to_plot
 for i=2:length(v_bins)
     temp_idx=logical((v1>=v_bins(i-1)).*(v1<v_bins(i)));
@@ -97,8 +113,11 @@ xlabel('C_\alpha within 10 Ang.')
 ylabel('fitness')
 xticks(1:length(v_bins(2:end)))
 xticklabels(v_bins(2:end))
-ylim([-1.5 0.1])
+ylim([-2 0.1])
 title('yeast Hsp90')
+for i=1:length(to_plot)
+    text(i,-1.8,num2str(length(to_plot{i})))
+end
 
 
 

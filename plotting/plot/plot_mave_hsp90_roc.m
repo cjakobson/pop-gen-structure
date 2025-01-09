@@ -45,38 +45,45 @@ dssp_table=output_table;
 load([dependency_directory 'mat-files/' systematic_name '_neighbor_table.mat'])
 neighbor_table=output_table;
 
-%mean fitness
-unique_residues=unique(v_residue);
-for i=1:length(unique_residues)
-    
-    residue_to_plot(i)=unique_residues(i);
-    fitness_to_plot(i)=mean(v_fitness(v_residue==unique_residues(i)));
-    
-    neighbors_to_plot(i)=neighbor_table.neighbors(unique_residues(i));
-    asa_to_plot(i)=dssp_table.sasa(unique_residues(i));
-    
+% %mean fitness
+% unique_residues=unique(v_residue);
+% for i=1:length(unique_residues)
+% 
+%     residue_to_plot(i)=unique_residues(i);
+%     fitness_to_plot(i)=mean(v_fitness(v_residue==unique_residues(i)));
+% 
+%     neighbors_to_plot(i)=neighbor_table.neighbors(unique_residues(i));
+%     asa_to_plot(i)=dssp_table.sasa(unique_residues(i));
+% 
+% end
+
+for i=1:length(v_fitness)
+
+    v_neighbors(i)=neighbor_table.neighbors(v_residue(i));
+    v_asa(i)=dssp_table.sasa(v_residue(i));
+
 end
 
 
-v1=asa_to_plot;
-v2=neighbors_to_plot;
-v3=fitness_to_plot;
+v1=v_asa;%asa_to_plot;
+v2=v_neighbors;%neighbors_to_plot;
+v3=v_fitness;%fitness_to_plot;
 
-v_bins_asa=0:30:180;
-v_bins_neighbors=0:5:30;
+v_bins_asa=0:20:200;
+v_bins_neighbors=3:3:30;
 
 %threshold for "unfit"
 
 %v_fit_thresh=-1:0.25:-0.25
 v_unfit_thresh=-0.2;
-v_fit_thresh=-0.1;
+v_fit_thresh=0;
+
 
 for k=1:length(v_fit_thresh)
 
     actual_unfit_idx=v3<v_unfit_thresh(k);
     actual_fit_idx=v3>v_fit_thresh(k);
-    f_unfit=sum(actual_unfit_idx)/sum(actual_fit_idx)
-    text(0.6,0.1,num2str(f_unfit))
+    f_unfit=sum(actual_unfit_idx)/sum(actual_fit_idx);
     
     m=1;
     for i=1:length(v_bins_asa)
@@ -98,13 +105,15 @@ for k=1:length(v_fit_thresh)
     
     hold on
     scatter(fpr,tpr,10*k,'k','filled')
-    %plot(fpr,tpr,'-k')
+    [~,sort_idx]=sort(fpr);
+    plot(fpr(sort_idx),tpr(sort_idx),'-k')
     axis square
     xlim([0 1])
     ylim(xlim)
     xlabel('FPR')
     ylabel('TPR')
     title('yeast Hsp90')
+    text(0.6,0.1,num2str(f_unfit))
     
     plot(xlim,ylim,':r')
     %xlabel('C_\alpha within 10 Ang.')
