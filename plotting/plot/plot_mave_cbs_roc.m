@@ -65,19 +65,9 @@ for i=1:length(v_fitness)
 end
 
 
-v1=v_asa';%asa_to_plot;
-v2=v_neighbors';%neighbors_to_plot;
-v3=v_fitness';%fitness_to_plot;
-
-% 
-% subplot(2,4,plot_offset+3)
-% hold on
-% temp_size=v3;
-% temp_size(temp_size==0)=0.01;
-% scatter(v1,v2,temp_size*20,'k','filled')
-% xlabel('ASA')
-% ylabel('C_{\alpha}')
-% 
+v_asa=v_asa';%asa_to_plot;
+v_neighbors=v_neighbors';%neighbors_to_plot;
+v_fitness=v_fitness';%fitness_to_plot;
 
 
 
@@ -123,18 +113,12 @@ for i=1:length(v_fitness)
 end
 
 
-%histogram(v_eve)
 
 
 
-%histogram(v_am)
-v4=v_am;
-v5=v_eve;
 
-
-
-v_bins_asa=0:20:200;
-v_bins_neighbors=3:3:30;
+v_bins_asa=[0:20:200 Inf];
+v_bins_neighbors=0:3:30;
 v_bins_am=0:0.01:1;
 v_bins_eve=0:0.01:1;
 
@@ -143,11 +127,11 @@ v_bins_eve=0:0.01:1;
 %v_fit_thresh=0.2:0.1:0.4;
 %v_unfit_thresh=0.4;
 %v_fit_thresh=0.4;
-v_unfit_thresh=median(v3,'omitnan');
-v_fit_thresh=median(v3,'omitnan');
+v_unfit_thresh=median(v_fitness,'omitnan');
+v_fit_thresh=median(v_fitness,'omitnan');
 
-actual_unfit_idx=v3<=v_unfit_thresh;
-actual_fit_idx=v3>=v_fit_thresh;
+actual_unfit_idx=v_fitness<=v_unfit_thresh;
+actual_fit_idx=v_fitness>=v_fit_thresh;
 f_unfit=sum(actual_unfit_idx)/sum(actual_fit_idx);
 
 m=1;
@@ -155,8 +139,8 @@ for i=1:length(v_bins_asa)
 
     for j=1:length(v_bins_neighbors)
 
-        predicted_unfit_idx=logical((v1<=v_bins_asa(i)).*...
-            (v2>=v_bins_neighbors(j)));
+        predicted_unfit_idx=logical((v_asa<=v_bins_asa(i)).*...
+            (v_neighbors>=v_bins_neighbors(j)));
 
         tpr(m)=sum(predicted_unfit_idx.*actual_unfit_idx)/...
             sum(actual_unfit_idx);
@@ -177,7 +161,7 @@ end
 
 for i=1:length(v_bins_am)
 
-    predicted_unfit_idx=v4>=v_bins_am(i);
+    predicted_unfit_idx=v_am>=v_bins_am(i);
 
     tpr_am(i)=sum(predicted_unfit_idx.*actual_unfit_idx)/...
         sum(actual_unfit_idx);
@@ -190,7 +174,7 @@ for i=1:length(v_bins_am)
             sum(actual_unfit_idx);
 
 
-    predicted_unfit_idx=v5>=v_bins_eve(i);
+    predicted_unfit_idx=v_eve>=v_bins_eve(i);
 
     tpr_eve(i)=sum(predicted_unfit_idx.*actual_unfit_idx)/...
         sum(actual_unfit_idx);
@@ -268,12 +252,12 @@ legend({'ASA/C_{\alpha}','AlphaMissense','EVE'},'Location','southeast')
 %scatter and do spearman
 subplot(2,4,plot_offset+3)
 hold on
-v1(v1==0)=0.1; %jitter off zero
+v_asa(v_asa==0)=0.1; %jitter off zero
 
-to_plot1=v2./v1;
-to_plot2=v4;
+to_plot1=v_neighbors./v_asa;
+to_plot2=v_am;
 
-temp_idx=v3<=v_unfit_thresh;
+temp_idx=v_fitness<=v_unfit_thresh;
 
 scatter(to_plot1(~temp_idx),to_plot2(~temp_idx),5,'g','filled',...
     'MarkerFaceAlpha',0.5)
@@ -285,18 +269,7 @@ ylabel('AlphaMissense prediction')
 %ylabel('fitness')
 axis square
 set(gca,'XScale','log')
-[r p]=corr(v2./v1,v3,'rows','complete','type','Spearman')
+[r p]=corr(v_neighbors./v_asa,v_fitness,'rows','complete','type','Spearman');
 
 %slide fit_thresh and plot AUROC?
-
-% subplot(2,4,plot_offset+3)
-% scatter(v4,v3,5,'k','filled')
-% xlabel('AlphaMissense prediction')
-% ylabel('fitness')
-% axis square
-% [r p]=corr(v4,v3,'rows','complete','type','Spearman')
-
-
-
-
 
