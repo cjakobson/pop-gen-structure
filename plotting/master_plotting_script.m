@@ -415,8 +415,8 @@ plot_mave_cbs(dependency_directory,2)
 
 %ROC in 2D for mave data
 
-subplot(2,4,5)
-plot_mave_hsp90_roc(dependency_directory)
+% subplot(2,4,5)
+% plot_mave_hsp90_roc(dependency_directory)
 
 % subplot(2,4,6)
 % plot_mave_hsp90_prc(dependency_directory)
@@ -424,7 +424,7 @@ plot_mave_hsp90_roc(dependency_directory)
 
 
 %subplot(2,4,6)
-plot_mave_cbs_roc(dependency_directory,5)
+plot_mave_cbs_roc(dependency_directory,4)
 
 %add clinvar pathogenic missense?
 

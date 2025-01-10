@@ -250,11 +250,31 @@ legend({'ASA/C_{\alpha}','AlphaMissense','EVE'},'Location','southeast')
 
 
 %scatter and do spearman
+% subplot(2,4,plot_offset+3)
+% hold on
+% 
+% to_plot1=v_neighbors;
+% to_plot2=v_asa;
+% 
+% temp_idx=v_fitness<=v_unfit_thresh;
+% 
+% scatter(to_plot1(~temp_idx),to_plot2(~temp_idx),10,'g','filled',...
+%     'MarkerFaceAlpha',0.5)
+% scatter(to_plot1(temp_idx),to_plot2(temp_idx),10,'m','filled',...
+%     'MarkerFaceAlpha',0.5)
+% 
+% xlabel('C_{\alpha}')
+% ylabel('ASA')
+% %ylabel('fitness')
+% axis square
+% %set(gca,'XScale','log')
+
+
+
 subplot(2,4,plot_offset+3)
 hold on
-v_asa(v_asa==0)=0.1; %jitter off zero
-
-to_plot1=v_neighbors./v_asa;
+%v_asa(v_asa==0)=0.1; %jitter off zero
+to_plot1=v_neighbors;%./v_asa;
 to_plot2=v_am;
 
 temp_idx=v_fitness<=v_unfit_thresh;
@@ -264,12 +284,37 @@ scatter(to_plot1(~temp_idx),to_plot2(~temp_idx),5,'g','filled',...
 scatter(to_plot1(temp_idx),to_plot2(temp_idx),5,'m','filled',...
     'MarkerFaceAlpha',0.5)
 
-xlabel('C_{\alpha}/ASA')
+xlabel('C_{\alpha}')%/ASA')
 ylabel('AlphaMissense prediction')
 %ylabel('fitness')
 axis square
-set(gca,'XScale','log')
+%set(gca,'XScale','log')
 [r p]=corr(v_neighbors./v_asa,v_fitness,'rows','complete','type','Spearman');
+
+
+
+subplot(2,4,plot_offset+4)
+hold on
+%v_asa(v_asa==0)=0.1; %jitter off zero
+to_plot1=v_asa;
+to_plot2=v_am;
+
+temp_idx=v_fitness<=v_unfit_thresh;
+
+scatter(to_plot1(~temp_idx),to_plot2(~temp_idx),5,'g','filled',...
+    'MarkerFaceAlpha',0.5)
+scatter(to_plot1(temp_idx),to_plot2(temp_idx),5,'m','filled',...
+    'MarkerFaceAlpha',0.5)
+
+xlabel('ASA')
+ylabel('AlphaMissense prediction')
+%ylabel('fitness')
+axis square
+%set(gca,'XScale','log')
+[r p]=corr(v_neighbors./v_asa,v_fitness,'rows','complete','type','Spearman');
+
+
+
 
 %slide fit_thresh and plot AUROC?
 
