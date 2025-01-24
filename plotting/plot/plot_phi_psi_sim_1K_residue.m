@@ -52,29 +52,55 @@ to_plot{4}(isnan(to_plot{2}))=[];
 
 
 subplot(2,4,plot_offset+1)
+%hold on
+%histogram(to_plot{1},-180:5:180,'Normalization','Probability')
+polarhistogram(to_plot{1}.*(pi/180),36,'Normalization','probability')
 hold on
-histogram(to_plot{1},-180:5:180,'Normalization','Probability')
-histogram(to_plot{2},-180:5:180,'Normalization','Probability')
-axis square
+polarhistogram(to_plot{2}.*(pi/180),36,'Normalization','probability')
+%histogram(to_plot{2},-180:5:180,'Normalization','Probability')
+rlim([0 0.11])
+%axis square
 %legend({'1K','sim'})
-xlabel('\phi')
-ylabel('norm. freq.')
-xlim([-180 180])
-title([aa_name ' ' structure_name])
+%xlabel('\phi')
+%ylabel('norm. freq.')
+%xlim([-180 180])
+title([aa_name ' ' structure_name ' phi'])
 text(0,0.05,['p = ' num2str(p_val1)])
 
 
 
 subplot(2,4,plot_offset+2)
+polarhistogram(to_plot{3}.*(pi/180),36,'Normalization','probability')
 hold on
-histogram(to_plot{3},-180:5:180,'Normalization','Probability')
-histogram(to_plot{4},-180:5:180,'Normalization','Probability')
-axis square
+polarhistogram(to_plot{4}.*(pi/180),36,'Normalization','probability')
+% hold on
+% histogram(to_plot{3},-180:5:180,'Normalization','Probability')
+% histogram(to_plot{4},-180:5:180,'Normalization','Probability')
+% axis square
+%legend({'1K','sim'},'Location','northwest')
+%xlabel('\psi')
+%ylabel('norm. freq.')
+%xlim([-180 180])
+rlim([0 0.11])
+title([aa_name ' ' structure_name ' psi'])
+text(-150,0.03,['p = ' num2str(p_val2)])
+
+
+%use this one to get legend without squishing
+subplot(2,4,plot_offset+3)
+polarhistogram(to_plot{3}.*(pi/180),36,'Normalization','probability')
+hold on
+polarhistogram(to_plot{4}.*(pi/180),36,'Normalization','probability')
+% hold on
+% histogram(to_plot{3},-180:5:180,'Normalization','Probability')
+% histogram(to_plot{4},-180:5:180,'Normalization','Probability')
+% axis square
 legend({'1K','sim'},'Location','northwest')
-xlabel('\psi')
-ylabel('norm. freq.')
-xlim([-180 180])
-title([aa_name ' ' structure_name])
+%xlabel('\psi')
+%ylabel('norm. freq.')
+%xlim([-180 180])
+rlim([0 0.11])
+title([aa_name ' ' structure_name ' psi'])
 text(-150,0.03,['p = ' num2str(p_val2)])
 
 

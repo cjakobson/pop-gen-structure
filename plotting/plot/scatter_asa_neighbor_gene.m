@@ -45,6 +45,10 @@ end
 
 hold on
 scatter(v1,v2,5,'k','filled')
+%size by dN
+%v3(v3==0)=nan;
+%v3(isinf(v3))=nan;
+%scatter(v1,v2,0.25./v3,'k')%,'filled')
 axis square
 xlabel('ASA (Ang.^2) 1K/sim')
 ylabel('C_\alpha within 10 Ang. 1K/sim')
