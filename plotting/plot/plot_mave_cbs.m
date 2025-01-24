@@ -65,6 +65,21 @@ for i=1:length(v_fitness)
 end
 
 
+%output table to color residues of structures
+for i=1:length(dssp_table.sasa)
+
+    v_buffer{i}='';
+    v_residue_labels_chimera{i}=[':' num2str(i)];
+
+end
+
+to_output=table(v_buffer',v_residue_labels_chimera',dssp_table.sasa);
+writetable(to_output,[dependency_directory 'cbs_sasa.txt'],'Delimiter','\t')
+
+to_output=table(v_buffer',v_residue_labels_chimera',neighbor_table.neighbors);
+writetable(to_output,[dependency_directory 'cbs_neighbors.txt'],'Delimiter','\t')
+
+
 % v1=asa_to_plot;
 % v2=fitness_to_plot;
 
