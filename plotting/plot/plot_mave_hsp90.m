@@ -104,6 +104,8 @@ title('yeast Hsp90')
 for i=1:length(to_plot)
     text(i,-1.8,num2str(length(to_plot{i})))
 end
+[r p]=corr(v1',v2','rows','complete','type','Spearman');
+text(1,-1.6,['p = ' num2str(p)])
 
 
 
@@ -132,6 +134,8 @@ title('yeast Hsp90')
 for i=1:length(to_plot)
     text(i,-1.8,num2str(length(to_plot{i})))
 end
+[r p]=corr(v1',v2','rows','complete','type','Spearman');
+text(1,-1.6,['p = ' num2str(p)])
 
 
 

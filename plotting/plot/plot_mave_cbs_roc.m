@@ -195,13 +195,22 @@ scatter(fpr_am,tpr_am,10,'r','filled')
 scatter(fpr_eve,tpr_eve,10,'b','filled')
 
 [~,sort_idx]=sort(fpr);
-plot(fpr(sort_idx),tpr(sort_idx),'-k')
+v1=fpr(sort_idx);
+v2=tpr(sort_idx);
+plot(v1,v2,'-k')
+text(0.25,v2(sum(v1<0.25)),num2str(v2(sum(v1<0.25))))
 
 [~,sort_idx]=sort(fpr_am);
-plot(fpr_am(sort_idx),tpr_am(sort_idx),'-r')
+v1=fpr_am(sort_idx);
+v2=tpr_am(sort_idx);
+plot(v1,v2,'-r')
+text(0.25,v2(sum(v1<0.25)),num2str(v2(sum(v1<0.25))))
 
 [~,sort_idx]=sort(fpr_eve);
-plot(fpr_eve(sort_idx),tpr_eve(sort_idx),'-b')
+v1=fpr_eve(sort_idx);
+v2=tpr_eve(sort_idx);
+plot(v1,v2,'-b')
+text(0.25,v2(sum(v1<0.25)),num2str(v2(sum(v1<0.25))))
 
 
 axis square
@@ -225,13 +234,22 @@ scatter(recall_am,precision_am,10,'r','filled')
 scatter(recall_eve,precision_eve,10,'b','filled')
 
 [~,sort_idx]=sort(recall);
-plot(recall(sort_idx),precision(sort_idx),'-k')
+v1=recall(sort_idx);
+v2=precision(sort_idx);
+plot(v1,v2,'-k')
+text(0.75,v2(sum(v1<0.75)),num2str(v2(sum(v1<0.75))))
 
 [~,sort_idx]=sort(recall_am);
-plot(recall_am(sort_idx),precision_am(sort_idx),'-r')
+v1=recall_am(sort_idx);
+v2=precision_am(sort_idx);
+plot(v1,v2,'-r')
+text(0.75,v2(sum(v1<0.75)),num2str(v2(sum(v1<0.75))))
 
 [~,sort_idx]=sort(recall_eve);
-plot(recall_eve(sort_idx),precision_eve(sort_idx),'-b')
+v1=recall_eve(sort_idx);
+v2=precision_eve(sort_idx);
+plot(v1,v2,'-b')
+text(0.75,v2(sum(v1<0.75)),num2str(v2(sum(v1<0.75))))
 
 axis square
 xlim([0 1])

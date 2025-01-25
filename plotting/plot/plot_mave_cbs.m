@@ -106,6 +106,9 @@ title('human CBS')
 for i=1:length(to_plot)
     text(i,0,num2str(length(to_plot{i})))
 end
+[r p]=corr(v1',v2','rows','complete','type','Spearman');
+text(1,0.9,['p = ' num2str(p)])
+
 
 
 
@@ -135,6 +138,9 @@ title('human CBS')
 for i=1:length(to_plot)
     text(i,0,num2str(length(to_plot{i})))
 end
+[r p]=corr(v1',v2','rows','complete','type','Spearman');
+text(1,0.9,['p = ' num2str(p)])
+
 
 
 

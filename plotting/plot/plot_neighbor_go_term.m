@@ -62,7 +62,7 @@ ylabel('relative frequency')
 legend({'all other',go_term})
 [h p]=kstest2(v2(~gene_idx),v2(gene_idx));
 text(1.2,0.06,num2str(p))
-% xlim([0.5 2])
+xlim([0.6 1.1])
 % ylim([0.5 1.2])
 % [r p]=corr(v1',v2','rows','complete');
 % text(1.5,1.15,num2str(r))
