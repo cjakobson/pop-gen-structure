@@ -1,8 +1,8 @@
 
 clear
 
-filebase='/Users/cjakobson/';
-%filebase='/Users/christopherjakobson/';
+%filebase='/Users/cjakobson/';
+filebase='/Users/christopherjakobson/';
 
 code_directory=[filebase 'Documents/GitHub/pop-gen-structure/'];
 dependency_directory=[filebase '/Dropbox/JaroszLab/pop-gen-structure-dependencies/'];
@@ -153,7 +153,8 @@ for i=1:length(chr_common)
     temp_chr_idx=ismember(chr,chr_common{i});
     
     temp_pos=pos(temp_chr_idx);
-    temp_alt=alt(temp_chr_idx);
+    %temp_alt=alt(temp_chr_idx);
+    temp_alt=alt_common{i};
     temp_gene=gene(temp_chr_idx);
     temp_protein_encoded=proteinEncoded(temp_chr_idx);
     
@@ -161,28 +162,30 @@ for i=1:length(chr_common)
     
     if sum(temp_pos_idx)>0
         
-        temp_alt=temp_alt(temp_pos_idx);
-        for j=1:length(temp_alt)
-    
-            temp_str=strsplit(temp_alt{j},',');
-            temp_alt{j}=temp_str{1};
+        %temp_alt=temp_alt(temp_pos_idx);
+        % for j=1:length(temp_alt)
+        % 
+        %     temp_str=strsplit(temp_alt{j},',');
+        %     temp_alt{j}=temp_str{1};
+        % 
+        % end
+        %temp_gene=temp_gene(temp_pos_idx);
+        %temp_protein_encoded=temp_protein_encoded(temp_pos_idx);
 
-        end
-        temp_gene=temp_gene(temp_pos_idx);
-        temp_protein_encoded=temp_protein_encoded(temp_pos_idx);
+        %temp_alt_idx=ismember(temp_alt,alt_common{i});
 
-        temp_alt_idx=ismember(temp_alt,alt_common{i});
-
-        if sum(temp_alt_idx)>0
+        %if sum(temp_alt_idx)>0
             
-            gene_common{i}=temp_gene{temp_alt_idx};
-            protein_encoded_common{i}=temp_protein_encoded{temp_alt_idx};
+        gene_common{i}=temp_gene{temp_pos_idx};%temp_gene{temp_alt_idx};
+        protein_encoded_common{i}=temp_protein_encoded{temp_pos_idx};%temp_protein_encoded{temp_alt_idx};
             
-        end
+        %end
         
     end
     
 end
+
+
 
 
 for i=1:length(protein_encoded_common)
@@ -289,8 +292,11 @@ for i=1:length(gene_to_output)
         asa_to_output(i)=asa_mat(gene_idx,residue_to_output(i));
         neighbors_to_output(i)=neighbor_mat(gene_idx,residue_to_output(i));
         
-        [~,temp_structure]=structure_types(secondary_mat{gene_idx,residue_to_output(i)});
-        structure_to_output(i)=temp_structure;
+        if ~isnan(asa_to_output(i))
+            [~,temp_structure]=structure_types(secondary_mat{gene_idx,residue_to_output(i)});
+            structure_to_output(i)=temp_structure;
+
+        end
         
     end
     
