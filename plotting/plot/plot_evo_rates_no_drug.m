@@ -1,4 +1,4 @@
-function [] = plot_evo_rates_rap(dependency_directory)
+function [] = plot_evo_rates_no_drug(dependency_directory)
 
 blue=[43 172 226]./256;
 orange=[248 149 33]./256;
