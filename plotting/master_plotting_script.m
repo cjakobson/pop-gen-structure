@@ -596,17 +596,22 @@ print([output_directory 'Figure_6_1'],'-djpeg','-r300')
 
 
 
-%Figure S6
+
 
 
 figure('units','normalized','outerposition',[0 0 1 1])
 
 
+%patterns of ASA, etc within FPR
+subplot(2,4,1)
+plot_fpr1_properties(dependency_directory)
+
+
 
 
 set(gcf,'PaperPositionMode','auto')
-print([output_directory 'Figure_S6_1'],'-dsvg','-r0')
-print([output_directory 'Figure_S6_1'],'-djpeg','-r300')
+print([output_directory 'Figure_6_2'],'-dsvg','-r0')
+print([output_directory 'Figure_6_2'],'-djpeg','-r300')
 
 
 
