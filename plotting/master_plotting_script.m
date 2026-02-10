@@ -607,6 +607,14 @@ subplot(2,4,1)
 plot_fpr1_properties(dependency_directory)
 
 
+%STAT3 GoF
+subplot(2,8,3)
+plot_stat3_sasa(dependency_directory)
+
+subplot(2,8,4)
+plot_stat3_neighbors(dependency_directory)
+
+
 
 
 set(gcf,'PaperPositionMode','auto')
