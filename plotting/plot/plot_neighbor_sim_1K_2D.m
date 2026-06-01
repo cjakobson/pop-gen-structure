@@ -46,7 +46,22 @@ end
 
 
 hold on
-imagesc(to_plot,[0.7 1])
+%rescale size
+temp_min=min(min(to_plot));
+temp_max=max(max(to_plot));
+size_factor=100;
+scaled_size=size_factor*(to_plot-temp_min)/(temp_max-temp_min)+0.01;
+%plot as sized dots instead
+for i=1:length(aa_labels)
+    for j=1:length(structure_labels)
+        temp_size=scaled_size(i,j);
+        temp_color=orange.*scaled_size(i,j)/size_factor+...
+            [1 1 1].*1-(scaled_size(i,j)/size_factor);
+        scatter(j,i,temp_size,temp_color,'filled')
+    end
+end
+
+%imagesc(to_plot,[0.7 1])
 yticks(1:length(aa_labels))
 yticklabels(aa_labels)
 xticks(1:length(structure_labels))
@@ -56,29 +71,30 @@ title('C_\alpha within 10 Ang.')
 xlim([0.5 length(structure_labels)+.5])
 ylim([0.5 length(aa_labels)+.5])
 
-m = size(get(gcf,'colormap'),1);
-%red to blue colormap
-if (mod(m,2) == 0)
-    % From [0 0 1] to [1 1 1], then [1 1 1] to [1 0 0];
-    m1 = m*0.5;
-    r = (0:m1-1)'/max(m1-1,1);
-    g = r;
-    r = [r; ones(m1,1)];
-    g = [g; flipud(g)];
-    b = flipud(r);
-else
-    % From [0 0 1] to [1 1 1] to [1 0 0];
-    m1 = floor(m*0.5);
-    r = (0:m1-1)'/max(m1,1);
-    g = r;
-    r = [r; ones(m1+1,1)];
-    g = [g; 1; flipud(g)];
-    b = flipud(r);
-end
-c = [r g b]; 
-%colormap(flipud(c))
-colormap(c)
-colorbar
+
+% m = size(get(gcf,'colormap'),1);
+% %red to blue colormap
+% if (mod(m,2) == 0)
+%     % From [0 0 1] to [1 1 1], then [1 1 1] to [1 0 0];
+%     m1 = m*0.5;
+%     r = (0:m1-1)'/max(m1-1,1);
+%     g = r;
+%     r = [r; ones(m1,1)];
+%     g = [g; flipud(g)];
+%     b = flipud(r);
+% else
+%     % From [0 0 1] to [1 1 1] to [1 0 0];
+%     m1 = floor(m*0.5);
+%     r = (0:m1-1)'/max(m1,1);
+%     g = r;
+%     r = [r; ones(m1+1,1)];
+%     g = [g; 1; flipud(g)];
+%     b = flipud(r);
+% end
+% c = [r g b]; 
+% %colormap(flipud(c))
+% colormap(c)
+% colorbar
 
 
 end

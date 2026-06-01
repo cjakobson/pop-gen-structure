@@ -174,13 +174,22 @@ print([output_directory 'Figure_2_1'],'-djpeg','-r300')
 figure('units','normalized','outerposition',[0 0 1 1])
 
 %2-D plots by AA/struct
-%subplot(2,8,1)
-%plot_asa_sim_1K_2D(dependency_directory)
+subplot(2,8,1)
+plot_asa_sim_1K_2D(dependency_directory)
 
-%subplot(2,8,2)
-%plot_neighbor_sim_1K_2D(dependency_directory)
+subplot(2,8,2)
+plot_neighbor_sim_1K_2D(dependency_directory)
 
 
+
+set(gcf,'PaperPositionMode','auto')
+print([output_directory 'Figure_2_2'],'-dsvg','-r0')
+print([output_directory 'Figure_2_2'],'-djpeg','-r300')
+
+
+
+
+figure('units','normalized','outerposition',[0 0 1 1])
 
 
 %scatter by combo
@@ -207,8 +216,8 @@ plot_phi_psi_sim_1K_residue(dependency_directory,'G','unstr.',4)
 
 
 set(gcf,'PaperPositionMode','auto')
-print([output_directory 'Figure_2_2'],'-dsvg','-r0')
-print([output_directory 'Figure_2_2'],'-djpeg','-r300')
+print([output_directory 'Figure_2_3'],'-dsvg','-r0')
+print([output_directory 'Figure_2_3'],'-djpeg','-r300')
 
 
 
