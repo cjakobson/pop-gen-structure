@@ -187,7 +187,6 @@ print([output_directory 'Figure_2_2'],'-dsvg','-r0','-vector')
 print([output_directory 'Figure_2_2'],'-djpeg','-r300')
 
 
-hregaf
 
 figure('units','normalized','outerposition',[0 0 1 1])
 

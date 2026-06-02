@@ -261,6 +261,101 @@ legend({'ASA/C_{\alpha}','AlphaMissense','EVE'},'Location','southeast')
 
 
 
+%AUPRC as function of residue in protein
+for i=1:length(unique_residues)
+
+    temp_residue_idx=v_residue==i;
+
+    temp_fitness=v_fitness(temp_residue_idx);
+    temp_asa=v_asa(temp_residue_idx);
+    temp_neighbors=v_neighbors(temp_residue_idx);
+
+    actual_unfit_idx=temp_fitness<=v_unfit_thresh;
+    actual_fit_idx=temp_fitness>=v_fit_thresh;
+
+    m=1;
+    clear recall precision
+    for j=1:length(v_bins_asa)
+    
+        for k=1:length(v_bins_neighbors)
+    
+            predicted_unfit_idx=logical((temp_asa<=v_bins_asa(j)).*...
+                (temp_neighbors>=v_bins_neighbors(k)));
+    
+            % tpr(m)=sum(predicted_unfit_idx.*actual_unfit_idx)/...
+            %     sum(actual_unfit_idx);
+            % fpr(m)=sum(predicted_unfit_idx.*actual_fit_idx)/...
+            %     sum(actual_fit_idx);
+    
+            %also PRC
+            precision(m)=sum(predicted_unfit_idx.*actual_unfit_idx)/...
+                    sum(predicted_unfit_idx);
+            recall(m)=sum(predicted_unfit_idx.*actual_unfit_idx)/...
+                    sum(actual_unfit_idx);
+
+            m=m+1;
+    
+        end
+    
+    end
+
+    %AUPRC
+    auprc(i)=sum(precision,'omitnan')/length(recall);
+
+    temp_am=v_am(temp_residue_idx);
+    temp_eve=v_eve(temp_residue_idx);
+
+    clear recall_am precision_am recall_eve precision_eve
+    for j=1:length(v_bins_am)
+
+        predicted_unfit_idx=temp_am>=v_bins_am(j);
+    
+        % tpr_am(j)=sum(predicted_unfit_idx.*actual_unfit_idx)/...
+        %     sum(actual_unfit_idx);
+        % fpr_am(j)=sum(predicted_unfit_idx.*actual_fit_idx)/...
+        %     sum(actual_fit_idx);
+    
+        precision_am(j)=sum(predicted_unfit_idx.*actual_unfit_idx)/...
+                sum(predicted_unfit_idx);
+        recall_am(j)=sum(predicted_unfit_idx.*actual_unfit_idx)/...
+                sum(actual_unfit_idx);
+    
+    
+
+        predicted_unfit_idx=temp_eve>=v_bins_eve(j);
+        % 
+        % tpr_eve(i)=sum(predicted_unfit_idx.*actual_unfit_idx)/...
+        %     sum(actual_unfit_idx);
+        % fpr_eve(i)=sum(predicted_unfit_idx.*actual_fit_idx)/...
+        %     sum(actual_fit_idx);
+    
+        precision_eve(j)=sum(predicted_unfit_idx.*actual_unfit_idx)/...
+                sum(predicted_unfit_idx);
+        recall_eve(j)=sum(predicted_unfit_idx.*actual_unfit_idx)/...
+                sum(actual_unfit_idx);
+    
+    end
+
+    auprc_am(i)=sum(precision_am,'omitnan')/length(recall_am);
+    auprc_eve(i)=sum(precision_eve,'omitnan')/length(recall_eve);
+
+end
+
+
+
+subplot(2,2,4)
+hold on
+plot(movmean(auprc,10),'-k')
+plot(movmean(auprc_am,10),'-r')
+plot(movmean(auprc_eve,10),'-b')
+xlim([0 length(unique_residues)])
+ylim([0 1])
+
+xlabel('residue')
+ylabel('AUPRC')
+title('human CBS')
+legend({'ASA/C_{\alpha}','AlphaMissense','EVE'},'Location','northeast')
+
 %repeat with clinvar pathogenic -- just PRC? highly unbalanced
 
 
@@ -289,47 +384,47 @@ legend({'ASA/C_{\alpha}','AlphaMissense','EVE'},'Location','southeast')
 
 
 
-subplot(2,4,plot_offset+3)
-hold on
-%v_asa(v_asa==0)=0.1; %jitter off zero
-to_plot1=v_neighbors;%./v_asa;
-to_plot2=v_am;
-
-temp_idx=v_fitness<=v_unfit_thresh;
-
-scatter(to_plot1(~temp_idx),to_plot2(~temp_idx),5,'g','filled',...
-    'MarkerFaceAlpha',0.5)
-scatter(to_plot1(temp_idx),to_plot2(temp_idx),5,'m','filled',...
-    'MarkerFaceAlpha',0.5)
-
-xlabel('C_{\alpha}')%/ASA')
-ylabel('AlphaMissense prediction')
-%ylabel('fitness')
-axis square
-%set(gca,'XScale','log')
-[r p]=corr(v_neighbors./v_asa,v_fitness,'rows','complete','type','Spearman');
-
-
-
-subplot(2,4,plot_offset+4)
-hold on
-%v_asa(v_asa==0)=0.1; %jitter off zero
-to_plot1=v_asa;
-to_plot2=v_am;
-
-temp_idx=v_fitness<=v_unfit_thresh;
-
-scatter(to_plot1(~temp_idx),to_plot2(~temp_idx),5,'g','filled',...
-    'MarkerFaceAlpha',0.5)
-scatter(to_plot1(temp_idx),to_plot2(temp_idx),5,'m','filled',...
-    'MarkerFaceAlpha',0.5)
-
-xlabel('ASA')
-ylabel('AlphaMissense prediction')
-%ylabel('fitness')
-axis square
-%set(gca,'XScale','log')
-[r p]=corr(v_neighbors./v_asa,v_fitness,'rows','complete','type','Spearman');
+% subplot(2,4,plot_offset+3)
+% hold on
+% %v_asa(v_asa==0)=0.1; %jitter off zero
+% to_plot1=v_neighbors;%./v_asa;
+% to_plot2=v_am;
+% 
+% temp_idx=v_fitness<=v_unfit_thresh;
+% 
+% scatter(to_plot1(~temp_idx),to_plot2(~temp_idx),5,'g','filled',...
+%     'MarkerFaceAlpha',0.5)
+% scatter(to_plot1(temp_idx),to_plot2(temp_idx),5,'m','filled',...
+%     'MarkerFaceAlpha',0.5)
+% 
+% xlabel('C_{\alpha}')%/ASA')
+% ylabel('AlphaMissense prediction')
+% %ylabel('fitness')
+% axis square
+% %set(gca,'XScale','log')
+% [r p]=corr(v_neighbors./v_asa,v_fitness,'rows','complete','type','Spearman');
+% 
+% 
+% 
+% subplot(2,4,plot_offset+4)
+% hold on
+% %v_asa(v_asa==0)=0.1; %jitter off zero
+% to_plot1=v_asa;
+% to_plot2=v_am;
+% 
+% temp_idx=v_fitness<=v_unfit_thresh;
+% 
+% scatter(to_plot1(~temp_idx),to_plot2(~temp_idx),5,'g','filled',...
+%     'MarkerFaceAlpha',0.5)
+% scatter(to_plot1(temp_idx),to_plot2(temp_idx),5,'m','filled',...
+%     'MarkerFaceAlpha',0.5)
+% 
+% xlabel('ASA')
+% ylabel('AlphaMissense prediction')
+% %ylabel('fitness')
+% axis square
+% %set(gca,'XScale','log')
+% [r p]=corr(v_neighbors./v_asa,v_fitness,'rows','complete','type','Spearman');
 
 
 
