@@ -69,7 +69,6 @@ plot_sim_1K_residue(dependency_directory)
 
 
 
-
 set(gcf,'PaperPositionMode','auto')
 print([output_directory 'Figure_1_1'],'-dsvg','-r0')
 print([output_directory 'Figure_1_1'],'-djpeg','-r300')

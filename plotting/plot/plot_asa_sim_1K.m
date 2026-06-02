@@ -28,6 +28,9 @@ xlabel('ASA (Ang.^2)')
 text(200,0.1,['p = ' num2str(p)])
 %set(gca,'YScale','log')
 
+%exact ratio for text
+(sum(v2==0)/sum(~isnan(v2)))/(sum(v1==0)/sum(~isnan(v1)))
+
 end
 
 

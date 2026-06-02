@@ -26,6 +26,10 @@ xlabel('C_\alpha within 10 Ang.')
 text(40,0.1,['p = ' num2str(p)])
 %set(gca,'YScale','log')
 
+
+%exact ratio for text
+(sum(v2<10)/sum(~isnan(v2)))/(sum(v1<10)/sum(~isnan(v1)))
+
 end
 
 
