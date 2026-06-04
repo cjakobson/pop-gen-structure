@@ -47,7 +47,10 @@ end
 
 hold on
 %rescale size
-temp_min=min(min(to_plot));
+%temp_min=min(min(to_plot));
+%hard code for neighbors
+temp_min=0.85;
+to_plot(to_plot<temp_min)=temp_min;
 temp_max=max(max(to_plot));
 size_factor=100;
 scaled_size=size_factor*(to_plot-temp_min)/(temp_max-temp_min)+0.01;
